@@ -1,11 +1,40 @@
 <template>
-  <view class="container">
-    首页
+  <view class="page__bd">
+    <view class="weui-panel weui-panel_access">
+      <view class="weui-panel__hd">仅作测试</view>
+      <view class="weui-panel__bd">
+        <repeat for="{{ topics }}" key="id" index="index" item="topic">
+          <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+              <image class="weui-media-box__thumb" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200">
+              </image>
+            </view>
+            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+              <view class="weui-media-box__title">{{ topic.title }}</view>
+              <view class="weui-media-box__desc">{{ topic.body }}</view>
+            </view>
+          </navigator>
+        </repeat>
+      </view>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
 
-  export default class Index extends wepy.page {}
+  export default class Index extends wepy.page {
+    // 用于template绑定的数据
+    data = {
+      topics: [{
+        id: 1,
+        title: 'test1',
+        body: 'testtest1'
+      }, {
+        id: 2,
+        title: 'test2',
+        body: 'test2test2'
+      }]
+    }
+  }
 </script>
