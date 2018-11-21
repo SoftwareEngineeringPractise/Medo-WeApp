@@ -1,13 +1,15 @@
 {
-  "description": "medo by WePY",
-  "setting": {
-    "urlCheck": true,
-    "es6": false,
-    "postcss": false,
-    "minified": false
-  },
-  "compileType": "miniprogram",
-  "appid": "wx70297882f4ec8393",
-  "projectname": "medo",
-  "miniprogramRoot": "./dist"
+	"description": "medo by WePY",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx70297882f4ec8393",
+	"projectname": "medo",
+	"miniprogramRoot": "dist/",
+	"condition": {}
 }
