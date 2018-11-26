@@ -1,0 +1,7 @@
+<view class="doc-container">
+  <view class="rich-text-div">
+    <text class="aritcle-title">{{article.Title}}</text>
+    <text class="aritcle-url">原文链接: {{article.ArticleUrl}}</text>
+    <rich-text nodes="{{myrich}}"></rich-text>
+  </view>
+</view>
