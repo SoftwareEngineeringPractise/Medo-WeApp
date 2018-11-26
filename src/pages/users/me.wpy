@@ -61,17 +61,11 @@
     </view>
   </view>
 </template>
-
-
-
-
-
-
 <script>
   import wepy from 'wepy'
   import api from '@/utils/api'
 
-  export default class User extends wepy.page {
+  export default class UserMe extends wepy.page {
     config={
       navigatorBarTitleText: '我的'
     }

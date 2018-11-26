@@ -65,7 +65,7 @@
         this.password = e.detail.value
       },
 
-      async submic() {
+      async submit() {
         this.error = false
         this.errorMessage = ''
 
@@ -103,11 +103,13 @@
     }
      // 页面打开
     async onshow() {
+      /**
       try {
-          // 打开页面自动调用一次登录
-        let authResponse = await api.login()
+          // 打开页面自动调用一次登录(X)
+        // let authResponse = await api.login()
 
           // 如果登录成功则返回上一页
+
         if (authResponse.statusCode === 201) {
           wepy.navigateBack()
         }
@@ -117,6 +119,7 @@
           content: '出错了，请重试'
         })
       }
+      */
     }
   }
 

@@ -46,8 +46,9 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/user',
-      'pages/auth/login'
+      'pages/users/me',
+      'pages/auth/login',
+      'pages/auth/register'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -62,13 +63,18 @@ export default class extends wepy.app {
         iconPath: 'images/home.png',
         selectedIconPath: 'images/home_selected.png'
       }, {
-        pagePath: 'pages/user',
+        pagePath: 'pages/users/me',
         text: '关注',
         iconPath: 'images/like.png',
         selectedIconPath: 'images/like_selected.png'
       }, {
-        pagePath: 'pages/user',
+        pagePath: 'pages/users/me',
         text: '我的',
+        iconPath: 'images/user.png',
+        selectedIconPath: 'images/user_selected.png'
+      }, {
+        pagePath: 'pages/users/me',
+        text: '临时',
         iconPath: 'images/user.png',
         selectedIconPath: 'images/user_selected.png'
       }],
