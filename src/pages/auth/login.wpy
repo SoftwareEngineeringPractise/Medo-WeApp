@@ -50,13 +50,16 @@
     config ={
       navigationBarTitleText: '登录'
     }
-    data ={
+
+    data = {
       username: '',
       password: '',
       error: false,
       errorMessage: ''
     }
-    methods= {
+
+    methods = {
+
       bindUserInput(e) {
         this.username = e.detail.value
       },
@@ -80,7 +83,7 @@
         }
 
         try {
-          let authResponse = await api.login(params)
+          let authResponse = await api.login(params)// 调用api.login
 
           // 201 表示登录正确，返回上一页
           if (authResponse.statusCode === 201) {
@@ -94,6 +97,7 @@
             this.$apply()
           }
         } catch (err) {
+          console.log(err)
           wepy.showModal({
             title: '提示',
             content: '登录时出错'

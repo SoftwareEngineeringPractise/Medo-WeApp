@@ -2,12 +2,13 @@
 import wepy from 'wepy'
 
 // 服务器接口地址
-const host = 'http://127.0.0.1:1234/api'
+const host = 'http://127.0.0.1:3000'
 
 // 普通请求
 const request = async (options, showLoading = true) => {
   // if传入字符串转换为对象
   if (typeof options === 'string') {
+    console.log('string!!!')
     options = {
       url: options
     }
@@ -19,6 +20,8 @@ const request = async (options, showLoading = true) => {
   }
   // 拼接请求地址
   options.url = host + '/' + options.url
+  console.log(options.url)
+  console.log(options)
 
   // 调用小程序的request方法
   let response = await wepy.request(options)
@@ -43,17 +46,22 @@ const login = async(params = {}) => {
   // 调用code
   let loginData = await wepy.login()
 
-  // 参数中增加code
+  // 参数中增加code    E
   params.code = loginData.code
 
+  // console.log(params.code)
+
   // 接口请求
+
   let authResponse = await request({
-    url: 'weapp/authorizations',
+    header: {'content-type': 'applicction/x-www-form-urlencoded'},
+    url: 'api/wx/users/login',
     data: params,
     method: 'POST'
+
   })
 
-  // 登录成功，就记录token信息
+  // 登录成功，就记录token信
   if (authResponse.statusCode === 201) {
     wepy.setStorageSync('access_token', authResponse.data.access_token)
     wepy.setStorageSync('access_token_expired_at', new Date().getTime() + authResponse.data.expires_in * 1000)
