@@ -1,0 +1,130 @@
+<style lang="less">
+.login-wrap {
+  margin-top: 50px;
+}
+</style>
+
+<template>
+  <view class="page">
+    <view class="page__bd login-wrap">
+      <view class="weui-toptips weui-toptips_warn" wx:if="{{ errorMessage }}">{{ errorMessage }}</view>
+
+      <view class="weui-cells__title">Medo 用户登录</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input {{ error ? 'weui-cell_warn' : ''}}">
+          <view class="weui-cell__hd">
+            <view class="weui-label">用户名</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="用户名或手机号或邮箱" @input="bindUserInput" />
+          </view>
+          <view wx:if="{{ error }}" class="weui-cell__ft">
+            <icon type="warn" size="23" color="#E64340"></icon>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input {{ error ? 'weui-cell_warn' : ''}}">
+          <view class="weui-cell__hd">
+            <view class="weui-label">密码</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="输入密码" type="password" @input="bindPasswordInput" />
+          </view>
+          <view wx:if="{{ error }}" class="weui-cell__ft">
+            <icon type="warn" size="23" color="#E64340"></icon>
+          </view>
+        </view>
+      </view>
+
+      <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" @tap="submit">登录</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '@/utils/api'
+
+  export default class Login extends wepy.page {
+    config ={
+      navigationBarTitleText: '登录'
+    }
+
+    data = {
+      username: '',
+      password: '',
+      error: false,
+      errorMessage: ''
+    }
+
+    methods = {
+
+      bindUserInput(e) {
+        this.username = e.detail.value
+      },
+
+      bindPasswordInput(e) {
+        this.password = e.detail.value
+      },
+
+      async submit() {
+        this.error = false
+        this.errorMessage = ''
+
+        if (!this.username || !this.password) {
+          this.errorMessage = '请填写账户名和密码'
+          return
+        }
+
+        let params = {
+          username: this.username,
+          password: this.password
+        }
+
+        try {
+          let authResponse = await api.login(params)// 调用api.login
+
+          // 200 表示登录正确，返回上一页
+          if (authResponse.statusCode === 200 && authResponse.data.data.token) {
+            wepy.navigateBack()
+          }
+
+          // 400 表示用户名和密码错误
+          if (authResponse.statusCode === 400) {
+            this.error = true
+            this.errorMessage = authResponse.data.meta.message
+            this.$apply()
+          }
+        } catch (err) {
+          console.log(err)
+          wepy.showModal({
+            title: '提示',
+            content: '登录时出错'
+          })
+        }
+      }
+    }
+     // 页面打开
+    async onshow() {
+      /**
+      try {
+          // 打开页面自动调用一次登录(X)
+        // let authResponse = await api.login()
+
+          // 如果登录成功则返回上一页
+
+        if (authResponse.statusCode === 201) {
+          wepy.navigateBack()
+        }
+      } catch (err) {
+        wepy.showModal({
+          title: '提示',
+          content: '出错了，请重试'
+        })
+      }
+      */
+    }
+  }
+
+</script>

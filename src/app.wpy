@@ -4,54 +4,48 @@ page{
   background-color: #F8F8F8;
   font-size: 16px;
 }
-.page__hd{
+.page__hd {
   padding: 40px;
 }
-.page__bd{
+.page__bd {
   padding-bottom: 40px;
 }
-.page__bd_spacing{
+.page__bd_spacing {
   padding-left: 15px;
   padding-right: 15px;
 }
 .page__ft{
-  padding-bottom:10px;
-  text-align:center;
+  padding-bottom: 10px;
+  text-align: center;
 }
-.page__title{
+.page__title {
   text-align: left;
   font-size: 20px;
-  font-weight:400;
+  font-weight: 400;
 }
-.page__desc{
+.page__desc {
   margin-top: 5px;
   color: #888888;
   text-align: left;
   font-size: 14px;
 }
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
 </style>
 
 <script>
 import wepy from 'wepy'
+import 'wepy-async-function'
 
 export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/user'
+      'pages/users/me',
+      'pages/auth/login'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
+      navigationBarTitleText: 'LaraBBS',
       navigationBarTextStyle: 'black'
     },
     tabBar: {
@@ -61,12 +55,12 @@ export default class extends wepy.app {
         iconPath: 'images/home.png',
         selectedIconPath: 'images/home_selected.png'
       }, {
-        pagePath: 'pages/user',
-        text: '关注',
+        pagePath: 'pages/users/me',
+        text: '收藏',
         iconPath: 'images/like.png',
         selectedIconPath: 'images/like_selected.png'
       }, {
-        pagePath: 'pages/user',
+        pagePath: 'pages/users/me',
         text: '我的',
         iconPath: 'images/user.png',
         selectedIconPath: 'images/user_selected.png'
@@ -79,9 +73,15 @@ export default class extends wepy.app {
   constructor () {
     super()
     this.use('requestfix')
+    this.use('promisify')
   }
 
   onLaunch() {
+    wx.login({
+      success: function(res) {
+        console.log(res)
+      }
+    })
   }
 }
 </script>
