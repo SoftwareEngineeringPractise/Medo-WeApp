@@ -23,7 +23,7 @@
     <view class="page__bd">
       <view class="weui-cells weui-cells_after-title">
         <!--已经登录-->
-        <navigator class="weui-cell" wx:if="{{ user }}" url><!--TODO:这里url记得补充-->
+        <navigator class="weui-cell" wx:if="{{ loggedIn }}" url><!--TODO:这里url记得补充-->
           <view class="weui-cell__hd avatar-wrap">
             <image class="avatar" src="{{ user.avatar }}"/>
             </image>
@@ -56,7 +56,7 @@
         </navigator>
       </view>
       <view class="page__bd page__bd_spacing logout">
-        <button class="weui-btn" type="warn" wx:if="{{user}}" @tap="logout">退出登录</button>
+        <button class="weui-btn" type="warn" wx:if="{{ loggedIn }}" @tap="logout">退出登录</button>
       </view>
     </view>
   </view>
@@ -70,15 +70,17 @@
       navigatorBarTitleText: '我的'
     }
     data={
-      user: null
+      userinfo: null,
+      loggedIn: false
     }
     methods={
       // 退出登录
       async logout (e) {
         try {
           let logoutResponse = await api.logout()
-          if (logoutResponse.statusCode === 204) {
-            this.user = null
+          if (logoutResponse.statusCode === 200) {
+            this.userinfo = null
+            this.loggedIn = false
             this.$apply()
           }
         } catch (err) {
@@ -93,9 +95,16 @@
 
     async onShow() {
       // 当打开页面，调取用户信息
-      this.user = await this.$parent.getCurrentUser()
-      this.$apply()// 获取用户信息后应用给user变量
+      // 获取缓存中的token
+      let token = wepy.getStorageSync('token')
+      if (token) { // 说明已经登录
+        // let userResponse=await api.authRequest('user')
+        this.loggedIn = true
+        this.$apply()
+      }
+      // this.user = await this.$parent.getCurrentUser()
+      // this.$apply()// 获取用户信息后应用给user变量
     }
-  }
+}
 
 </script>
