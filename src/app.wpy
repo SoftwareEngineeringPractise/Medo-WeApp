@@ -41,12 +41,14 @@ export default class extends wepy.app {
     pages: [
       'pages/index',
       'pages/users/me',
-      'pages/auth/login'
+      'pages/auth/login',
+      'pages/users/editauth',
+      'pages/users/edit_name'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'LaraBBS',
+      navigationBarTitleText: 'MeDo',
       navigationBarTextStyle: 'black'
     },
     tabBar: {

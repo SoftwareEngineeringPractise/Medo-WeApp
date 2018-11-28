@@ -50,7 +50,7 @@
           </view>
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
         </navigator>
-        <navigator class="weui-cell weui-cell_access" url="">
+        <navigator class="weui-cell weui-cell_access" url="/pages/users/editauth">
           <view class="weui-cell__bd">账号资料</view>
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
         </navigator>

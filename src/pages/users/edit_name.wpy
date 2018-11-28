@@ -1,0 +1,58 @@
+<style>
+
+</style>
+<template>
+  <view class="page">
+    <view class="page__bd">
+      <form bindsubmit="submit">
+        <view class="weui-cells__title">姓名</view>
+        <view class="weui-cells weui-celss_after-title">
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+              <input class="weui-input" placeholder="请输入姓名" name="name" value="{{ user.name }}"/>
+            </view>
+            <view wx:if="{{ errors.name }}" class="weui-cell__ft">
+              <icon type="warn" size="23" color="#E64340"></icon>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{ errors.name }}" class="weui-cells__tips error-message">{{errors.name[0] }}</view>
+        <view class="weui-btn-area">
+          <button class="weui-btn" type="primary" formType="submit">修改</button>
+        </view>
+      </form>
+    </view>
+  </view>
+
+
+</template>
+<script>
+import wepy from 'wepy'
+import api from '@/utils/api'
+
+export default class EditUsername extends wepy.page{
+  config ={
+    navigationBarTitleText:'修改用户名'
+  }
+  data={
+    user:null,
+    errors:null
+  }
+  async onShow(){
+    this.user=await this.$parent.getCurrentUser()
+    this.$apply()
+  }
+  async submit(e){
+    this.errors=null
+    try{
+      let editResponse=await api.authedit({
+        url:'/users/me/name',
+        method:'PUT',
+        data:e.detail.value
+      })
+    }
+  }
+}
+
+
+</script>
