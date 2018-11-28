@@ -76,6 +76,30 @@ const login = async(params = {}) => {
   return authResponse
 }
 
+const getToken = async(options) => { // 获取token
+  let token = wepy.getStorageSync('token')
+  return token
+// TODO:刷新toekn
+}
+
+const authRequest = async(options, showLoading = true) => { // 利用token调取用户信息
+  if (typeof options === 'string') {
+    options = {
+      url: options
+    }
+  }
+  let token = await getToken()
+  options = {
+    url: 'api/wx/users/me/info',
+    method: 'GET',
+    header: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    }
+  }
+  return request(options, showLoading)
+}
+
 // 退出登录
 const logout = async(params = {}) => {
   let token = wepy.getStorageSync('token')
@@ -99,5 +123,6 @@ const logout = async(params = {}) => {
 export default {
   request,
   login,
-  logout
+  logout,
+  authRequest
 }
