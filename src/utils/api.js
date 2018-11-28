@@ -54,17 +54,23 @@ const login = async(params = {}) => {
   // 接口请求
 
   let authResponse = await request({
-    header: {'content-type': 'applicction/x-www-form-urlencoded'},
+    header: {'content-type': 'application/x-www-form-urlencoded'},
     url: 'api/wx/users/login',
     data: params,
     method: 'POST'
 
   })
 
+  console.log(authResponse)
+  //console.log(authResponse.data.data.token)
+
   // 登录成功，就记录token信
-  if (authResponse.statusCode === 201) {
-    wepy.setStorageSync('access_token', authResponse.data.access_token)
-    wepy.setStorageSync('access_token_expired_at', new Date().getTime() + authResponse.data.expires_in * 1000)
+  if (authResponse.statusCode === 200 && authResponse.data.data.token) {
+    console.log(authResponse.data.data.token)
+    wepy.setStorageSync('token', authResponse.data.data.token)
+    console.log("ok")
+    //!!TODO: 这里api有点问题，没有返回过期时间的信息
+    wepy.setStorageSync('token_expired_at', new Date().getTime() + authResponse.data.expires_in * 1000)
   }
 
   return authResponse
