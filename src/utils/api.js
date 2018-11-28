@@ -62,21 +62,42 @@ const login = async(params = {}) => {
   })
 
   console.log(authResponse)
-  //console.log(authResponse.data.data.token)
+  // console.log(authResponse.data.data.token)
 
-  // 登录成功，就记录token信
+  // 登录成功，就记录token信息，这里的token是JWT 开头的
   if (authResponse.statusCode === 200 && authResponse.data.data.token) {
     console.log(authResponse.data.data.token)
     wepy.setStorageSync('token', authResponse.data.data.token)
-    console.log("ok")
-    //!!TODO: 这里api有点问题，没有返回过期时间的信息
+    console.log('ok')
+    //! !TODO: 这里api有点问题，没有返回过期时间的信息
     wepy.setStorageSync('token_expired_at', new Date().getTime() + authResponse.data.expires_in * 1000)
   }
 
   return authResponse
 }
 
+// 退出登录
+const logout = async(params = {}) => {
+  let token = wepy.getStorageSync('token')
+  // 删除token,
+  let logoutResponse = await wepy.request({
+    url: host + '/' + 'api/wx/users/logout',
+    method: 'GET',
+    header: {
+      'Authorization': token,
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (logoutResponse.statusCode === 200) {
+    wepy.clearStorage()
+  }
+
+  return logoutResponse
+}
+
 export default {
   request,
-  login
+  login,
+  logout
 }
