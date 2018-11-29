@@ -38,6 +38,12 @@ const request = async (options, showLoading = true) => {
       content: '服务器错误'
     })
   }
+  if (response.statusCode === 401) {
+    wepy.showModal({
+      title: '提示',
+      content: '没有权限！您可能未登录或登录过期'
+    })
+  }
   return response
 }
 
@@ -82,6 +88,14 @@ const getToken = async(options) => { // 获取token
 // TODO:刷新toekn
 }
 
+const authedit = async(options, showLoading = true) => {
+  let token = await getToken()
+  options.header = {
+    'Authorization': token
+  }
+  return request(options, showLoading)
+}
+
 const authRequest = async(options, showLoading = true) => { // 利用token调取用户信息
   if (typeof options === 'string') {
     options = {
@@ -124,5 +138,6 @@ export default {
   request,
   login,
   logout,
-  authRequest
+  authRequest,
+  authedit
 }

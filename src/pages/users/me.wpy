@@ -25,11 +25,11 @@
         <!--已经登录-->
         <navigator class="weui-cell" wx:if="{{ user }}" url><!--TODO:这里url记得补充,user表结构还不完全，后期需要改-->
           <view class="weui-cell__hd avatar-wrap">
-            <image class="avatar" src="{{ user.data.avatarUrl }}"/>
+            <image class="avatar" src="{{ user.avatarUrl }}"/>
             </image>
           </view>
           <view class="weui-cell__bd">
-            <view>{{ user.data.username }}</view>
+            <view>{{ user.username }}</view>
             <view class="page__desc">{{ user.introduction || '' }}</view>
           </view>
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>

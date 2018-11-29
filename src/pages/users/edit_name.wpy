@@ -1,5 +1,7 @@
 <style>
-
+.error-message{
+  color:#E64340;
+}
 </style>
 <template>
   <view class="page">
@@ -9,14 +11,14 @@
         <view class="weui-cells weui-celss_after-title">
           <view class="weui-cell weui-cell_input">
             <view class="weui-cell__bd">
-              <input class="weui-input" placeholder="请输入姓名" name="name" value="{{ user.name }}"/>
+              <input class="weui-input" placeholder="请输入姓名" name="name" value="{{ name }}"/>
             </view>
-            <view wx:if="{{ errors.name }}" class="weui-cell__ft">
+            <view wx:if="{{ errors }}" class="weui-cell__ft">
               <icon type="warn" size="23" color="#E64340"></icon>
             </view>
           </view>
         </view>
-        <view wx:if="{{ errors.name }}" class="weui-cells__tips error-message">{{errors.name[0] }}</view>
+        <view wx:if="{{ errors }}" class="weui-cells__tips error-message">{{errors }}</view>
         <view class="weui-btn-area">
           <button class="weui-btn" type="primary" formType="submit">修改</button>
         </view>
@@ -30,29 +32,52 @@
 import wepy from 'wepy'
 import api from '@/utils/api'
 
-export default class EditUsername extends wepy.page{
+export default class EditUsername extends wepy.page {
   config ={
-    navigationBarTitleText:'修改用户名'
+    navigationBarTitleText: '修改用户名'
   }
   data={
-    user:null,
-    errors:null
+    name: null,
+    errors: null
   }
-  async onShow(){
-    this.user=await this.$parent.getCurrentUser()
+  async onShow() {
+    let user = await this.$parent.getCurrentUser()
+    this.name = user.username
     this.$apply()
   }
-  async submit(e){
-    this.errors=null
-    try{
-      let editResponse=await api.authedit({
-        url:'/users/me/name',
-        method:'PUT',
-        data:e.detail.value
+  async submit(e) {
+    this.errors = null
+    try {
+      let editResponse = await api.authedit({
+        url: 'api/wx/users/me/name' + '?name=' + e.detail.value.name,
+        method: 'PUT'
+      })
+
+      if (editResponse.statusCode === 400) { // 报错信息
+        this.errors = editResponse.data.meta.message
+        this.$apply()
+      }
+
+      if (editResponse.statusCode === 200) {
+        this.name = e.detail.value.name
+        wepy.setStorageSync('user', editResponse.data.data.user)
+        this.$apply()
+
+        wepy.showToast({
+          title: '修改成功',
+          icon: 'success',
+          duration: 2000
+        })
+        setTimeout(() => { wx.navigateBack() }, 2000)
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '出错了。。'
       })
     }
   }
 }
-
 
 </script>
