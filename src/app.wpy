@@ -41,12 +41,17 @@ export default class extends wepy.app {
     pages: [
       'pages/index',
       'pages/users/me',
-      'pages/auth/login'
+      'pages/auth/login',
+      'pages/users/editauth',
+      'pages/users/edit_name',
+      'pages/users/edit_password',
+      'pages/users/edit_email',
+      'pages/users/edit_tel'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'LaraBBS',
+      navigationBarTitleText: 'MeDo',
       navigationBarTextStyle: 'black'
     },
     tabBar: {
@@ -86,7 +91,7 @@ export default class extends wepy.app {
       if (!user) {
         let userResponse = await api.authRequest('user')
         if (userResponse.statusCode === 200) {
-          user = userResponse.data
+          user = userResponse.data.data
           wepy.setStorageSync('user', user)
         }
       }
