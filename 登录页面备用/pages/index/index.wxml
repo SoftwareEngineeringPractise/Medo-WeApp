@@ -1,0 +1,53 @@
+<view class="doc-container">
+  <view class="doc-title">导师地图</view>
+  <view class="page__hd">
+      <view class="section__ctn">
+ 
+  <text>
+        计算机科学技术系
+          系统结构研究所
+          网络与信息系统研究所
+          软件研究所
+          计算语言学研究所
+          数字媒体研究所
+          高能效计算与应用中心
+
+        智能科学系
+          信息科学中心
+
+        基础实验教学研究中心
+          基础实验教学研究所
+
+        创新研究院
+         人工智能创新中心</text>
+          </view>
+        </view>
+ 
+  <block wx:for="{{weather}}">
+    <view>{{item.Code}}</view>
+    <view>{{item.WeatherDate}}</view>
+    <view>{{item.WeatherInfo}}</view>
+    <view>{{item.WeatherWindLevel}}</view>
+    
+  </block>
+  
+  <block wx:for="{{feeds}}" wx:key="{{item.ArticleId}}">
+    <view class="list" data-para="{{item}}" bindtap="tapItem">
+      <view class="view_preinfo">
+        <text class="list_preinfo">{{item.CreateDateTime}} / {{item.ArticleAuthor}}</text>
+      </view>
+      <text class="list_title">{{item.ArticleTitle}}</text>
+      <view>
+        <block wx:for="{{item.Tags}}" wx:key="{{item.TagName}}">
+          <text class="list_tag" style="border: solid 1px {{item.BackgroundColor}};">{{item.TagName}}</text>
+        </block>
+      </view>
+    </view>
+  </block>
+
+
+</view>
+<view>
+
+         
+</view>
