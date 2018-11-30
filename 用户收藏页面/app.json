@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/fav/fav",
+    "pages/usercenter/usercenter",
+    "pages/details/details",
+    "pages/usercenter/login",
+    "pages/tcher/tcher"
+  ],
+  "window": {
+    "backgroundColor": "#f5f5f5",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#f5f5f5",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "selectedColor": "#1AAD16",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "主页",
+        "iconPath": "images/news.png",
+        "selectedIconPath": "images/news_s.png"
+      },
+      {
+        "pagePath": "pages/fav/fav",
+        "text": "收藏",
+        "iconPath": "images/star.png",
+        "selectedIconPath": "images/star_s.png"
+      },
+      {
+        "pagePath": "pages/tcher/tcher",
+        "text": "导师信息",
+        "iconPath": "images/news.png",
+        "selectedIconPath": "images/news_s.png"
+      },
+      {
+        "pagePath": "pages/usercenter/login",
+        "text": "登陆",
+        "iconPath": "images/icon_index.png",
+        "selectedIconPath": "images/icon_index_HL.png"
+      },
+      {
+        "pagePath": "pages/usercenter/usercenter",
+        "text": "ME",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user_s.png"
+      }
+    ]
+  }
+}
