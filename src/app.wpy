@@ -48,7 +48,8 @@ export default class extends wepy.app {
       'pages/users/edit_email',
       'pages/users/edit_tel',
       'pages/users/editIntro',
-      'pages/commu/addNotice'
+      'pages/commu/addNotice',
+      'pages/commu/collection'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -63,7 +64,7 @@ export default class extends wepy.app {
         iconPath: 'images/home.png',
         selectedIconPath: 'images/home_selected.png'
       }, {
-        pagePath: 'pages/users/me',
+        pagePath: 'pages/commu/collection',
         text: '收藏',
         iconPath: 'images/like.png',
         selectedIconPath: 'images/like_selected.png'
