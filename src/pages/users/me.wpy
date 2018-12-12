@@ -23,7 +23,7 @@
     <view class="page__bd">
       <view class="weui-cells weui-cells_after-title">
         <!--已经登录-->
-        <navigator class="weui-cell" wx:if="{{ user }}" url><!--TODO:这里url记得补充,user表结构还不完全，后期需要改-->
+        <navigator class="weui-cell" wx:if="{{ user }}" url="/pages/users/showuser?id={{ user._id }}"><!--TODO:这里url记得补充,user表结构还不完全，后期需要改-->
           <view class="weui-cell__hd avatar-wrap">
             <image class="avatar" src="{{ user.avatarUrl }}"/>
             </image>
@@ -75,7 +75,7 @@
 
   export default class UserMe extends wepy.page {
     config={
-      navigatorBarTitleText: '我的'
+      navigationBarTitleText: '我的'
     }
     data={
       user: null

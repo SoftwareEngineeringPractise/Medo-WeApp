@@ -1,0 +1,195 @@
+<style lang="less">
+page{
+  background-color:#FFFFFF;
+}
+.avatar-wrap{
+  position:relative;
+
+  margin-right:30px;
+}
+.avatar{
+  width:50px;
+  height:50px;
+  display:block;
+  border-radius:50%;
+
+}
+.pagehead{
+  height:100px;
+}
+
+.navbar {
+    .page,
+    .page__bd{
+        height: 100%;
+    }
+    .page__bd{
+        padding-bottom: 0;
+    }
+    .weui-tab__content{
+        padding-top: 60px;
+        text-align: center;
+    }
+}
+.weui-media-box__info__meta{
+  magin: 0;
+  font-size: 12px;
+}
+.notice-info{
+  magin-top:5px;
+}
+.notice-title{
+  white-space: normal;
+  font-size:14px;
+}
+.reply-count{
+  background-color:#d8d8d8;
+  float:right;
+}
+</style>
+<template>
+  <view class="page">
+    <view class="page__bd">
+      <view class="weui-cells weui-cells_after-title pagehead">
+        <navigator class="weui-cell">
+          <view class="weui-cell__hd avatar-wrap">
+            <image class="avatar" src=""/></image>
+          </view>
+          <view class="weui-cell__bd">
+            <view>{{ user.username }}</view>
+          </view>
+        </navigator>
+      </view>
+      <view class="navbar page__bd">
+        <view class="weui-tab">
+          <view class="weui-navbar">
+            <view wx:for="{{tabs}}" wx:key="*this" id="{{index}}" class="weui-navbar__item {{activeIndex ==index ? 'weui-bar__item_on' : '' }}" @tap="tabClick">
+              <view class="weui-navbar__title">{{ item }}</view>
+            </view>
+            <view class="weui-navbar__slider" style="left: {{ sliderLeft }}px; transform: translateX({{ sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+          </view>
+          <view class="weui-tab__panel">
+            <view class="weui-tab__content" hidden="{{activeIndex !=0 }}">这个暂时还没有</view>
+            <view class="weui-panel__bd" hidden="{{activeIndex !=1 }}">
+              <view class="weui-panel__bd">
+                <repeat for="{{noticeList}}" key="id" index="n_index" item="notice">
+                  <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                      <image class="weui-media-box__thumb avatar" src=""></image>
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                      <view class="weui-media-box__title">{{ notice.title }}</view>
+                      <view class="weui-media__info notice-info">
+                        <view class="weui-media-box__desc">{{ notice.description }}</view>
+                        <view class="weui-media-box__info__meta">{{ notice.author.username }}</view>
+                        <view class="weui-media-box__info__meta">{{ notice.addTime }}</view>
+                      </view>
+                    </view>
+                  </navigator>
+                </repeat>
+                <view class="weui-loadmore weui-loadmore_line" wx:if="{{noMoreData_notice }}">
+                  <view class="weui-loadingmore_tips weui-loadmore__tips_in-line">到底了~</view>
+                </view>
+              </view>
+            </view>
+
+            <view class="weui-tab__content" hidden="{{activeIndex !=2 }}">选项三</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import api from '@/utils/api'
+const sliderWidth = 96
+
+export default class UserShow extends wepy.page {
+  config={
+    navigationBarTitleText: '用户详情'
+  }
+  data={
+    tabs: ['介绍', '公告', '评价'],
+    activeIndex: 0,
+    sliderOffset: 0,
+    sliderLeft: 0,
+    user: null,
+    noticeList: [],
+    page: 1,
+    noMoreData_notice: false
+  }
+
+  methods={
+    tabClick(e) {
+      this.sliderOffset = e.currentTarget.offsetLeft
+      this.activeIndex = e.currentTarget.id
+    }
+  }
+
+  async getUser(id) {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let userResponse = await api.request({
+        url: 'api/wx/users/' + id + '/info',
+        method: 'GET',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (userResponse.statusCode === 200) {
+        this.user = userResponse.data.data
+
+        this.$apply()
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '出错了'
+      })
+    }
+  }
+
+  async getNotice(id, page = 1, reset = false) {
+    try {
+      let noticeListResponse = await api.request({
+        url: 'api/wx/contents' + '?authorid=' + id + '&page=' + page,
+        method: 'GET'
+      })
+      let noticeList = noticeListResponse.data.data
+      this.noticeList = reset ? noticeList.docs : this.noticeList.concat(noticeList.docs)
+      if (noticeList.page === noticeList.pages) {
+        this.noMoreData_notice = true
+      }
+      this.$apply()
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
+  }
+
+  async onReachBottom() {
+    if (this.noMoreData_notice) {
+      return
+    }
+    this.page = this.page + 1
+    await this.getNotice(this.page)
+    this.$apply()
+  }
+
+  async onLoad(options) {
+    let res = await wepy.getSystemInfo()
+
+    this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
+    this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
+    this.getUser(options.id)
+    this.getNotice(options.id)
+  }
+}
+
+</script>
