@@ -37,6 +37,9 @@
               <view class="weui-badge reply-count">{{ notice.views }}</view>
             </navigator>
           </repeat>
+          <view class="weui-loadmore weui-loadmore_line" wx:if="{{ noMoreData }}">
+            <view class="weui-loadingmore__tips weui-loadmore__tips_in-line">到底了~</view>
+          </view>
         </view>
       </view>
     </view>
@@ -52,25 +55,31 @@ export default class NoticeIndex extends wepy.page {
   }
   data={
     notice: [],
-    page: 1
+    page: 1,
+    noMoreData: false
+
   }
   // 获取最新公告数据
-  // TODO:需要完善代码，暂时接口还没有测试。。
+  // TODO:需要完善代码，。
   async getNotice(page = 1, reset = false) {
     try {
       // 请求最新公告列表接口
       let noticelistResponse = await api.request({
-        url: 'api/wx/contents',
+        url: 'api/wx/contents' + '?page=' + page,
         headers: {
           'Content-Type': 'application/json'
         }
       })
-      let noticelist = noticelistResponse.data.data.docs
+      let noticelist = noticelistResponse.data.data
       console.log(noticelist)
      // console.log(noticelist('doc'))
       // 合并到this.notice
-      this.notice = reset ? noticelist : this.notice.concat(noticelist)
+      this.notice = reset ? noticelist.docs : this.notice.concat(noticelist.docs)
       console.log(this.notice)
+      // 判断有没有加载完所有页数
+      if (noticelist.page === noticelist.pages) {
+        this.noMoreData = true
+      }
       this.$apply()
     } catch (err) {
       wepy.showModal({
@@ -81,9 +90,20 @@ export default class NoticeIndex extends wepy.page {
   }
 
   async onPullDownRefresh() {
+    this.noMoreData = false
     this.page = 1
     await this.getNotice(1, true)
     wepy.stopPullDownRefresh()
+  }
+
+  async onReachBottom() {
+    //
+    if (this.noMoreData) {
+      return
+    }
+    this.page = this.page + 1
+    await this.getNotice(this.page)
+    this.$apply()
   }
 
   async onLoad() {
