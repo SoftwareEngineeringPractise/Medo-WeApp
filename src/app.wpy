@@ -49,7 +49,8 @@ export default class extends wepy.app {
       'pages/users/edit_tel',
       'pages/users/editIntro',
       'pages/commu/addNotice',
-      'pages/commu/collection'
+      'pages/commu/collection',
+      'pages/users/showuser'
     ],
     window: {
       backgroundTextStyle: 'light',
