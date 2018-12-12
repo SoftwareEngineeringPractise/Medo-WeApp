@@ -12,6 +12,27 @@
         text-align: center;
     }
 }
+
+ .weui-media-box__info__meta {
+    margin: 0;
+    font-size: 12px;
+  }
+
+    .topic-info {
+    margin-top: 5px;
+  }
+  .topic-title {
+    white-space: normal;
+    font-size: 14px;
+    text-align: left;
+  }
+  .avatar {
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 50px;
+    height: 50px;
+  }
 </style>
 <template>
     <view class="navbar page">
@@ -24,7 +45,28 @@
                     <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
                 </view>
                 <view class="weui-tab__panel">
-                    <view class="weui-tab__content" hidden="{{activeIndex != 0}}">选项一的内容</view>
+
+                    <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 0}}">
+                      <!--关注的人-->
+                      <view class="weui-panel weui-panel_access">
+                        <view class="weui-panel__bd">
+                          <repeat for="{{ followeesList }}" key="id" index="f_index" item="followee">
+                            <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                                <image class="weui-media-box__thumb avatar" src=""></image>
+                              </view>
+                              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                                <view class="weui-media-box__title topic-title">{{ followee.followId.username}}</view>
+                                <view class="weui-media-box__info topic-info">
+                                  <view class="weui-media-box__info__meta">简介or认证</view>
+                                </view>
+                              </view>
+                            </navigator>
+                          </repeat>
+                        </view>
+                      </view>
+                    </view>
+
                     <view class="weui-tab__content" hidden="{{activeIndex != 1}}">选项二的内容</view>
                     <view class="weui-tab__content" hidden="{{activeIndex != 2}}">选项三的内容</view>
                 </view>
@@ -35,22 +77,62 @@
 
 <script>
     import wepy from 'wepy'
+    import api from '@/utils/api'
 
 const sliderWidth = 96 // 需要设置slider的宽度，用于计算中间位置
 
 export default class Toast extends wepy.page {
+  config={
+        // enablePullDownRefresh: true,
+        navigationBarTitleText: 'My Collection'
+  }
       data = {
         tabs: ['关注', '动态', '收藏'],
         activeIndex: 1,
         sliderOffset: 0,
-        sliderLeft: 0
+        sliderLeft: 0,
+        followees: [],
+        followeesList: []
+
       };
 
       methods = {
         tabClick (e) {
           this.sliderOffset = e.currentTarget.offsetLeft
           this.activeIndex = e.currentTarget.id
+          console.log(this.activeIndex)
+          if (this.activeIndex === '0') {
+            console.log('xuanzhong!')
+            this.getFollowees()
+          }
         }
+      }
+
+      async getFollowees() {
+        let token = await wepy.getStorageSync('token')
+        try {
+          let followeesResponse = await api.request({
+            url: 'api/wx/me/follows',
+            header: {
+              Authorization: token
+            },
+            method: 'GET'
+          })
+          if (followeesResponse.statusCode === 200) {
+            let followeesList = followeesResponse.data.data
+            this.followeesList = followeesList
+            this.$apply()
+            console.log('111')
+            console.log(this.followeesList[0].followId.username)
+          }
+        } catch (err) {
+
+        }
+      }
+
+      async onPullDownRefresh() {
+        await this.getFollowees()
+        wepy.stopPullDownRefresh()
       }
 
       async onLoad () {
@@ -58,6 +140,8 @@ export default class Toast extends wepy.page {
 
         this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
         this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
+
+        this.getFollowees()
       }
     }
 </script>
