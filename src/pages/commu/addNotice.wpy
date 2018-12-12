@@ -59,7 +59,7 @@
         <view wx:if="{{ errors.contents }}" class="weui-cells__tips error-message">{{ errors.contents[0] }}</view>
 
         <view class="weui-btn-area">
-          <button class="weui-btn" type="primary" formType="submit">修改</button>
+          <button class="weui-btn" type="primary" formType="submit">发布</button>
         </view>
       </form>
     </view>
