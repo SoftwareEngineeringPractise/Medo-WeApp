@@ -46,7 +46,8 @@ export default class extends wepy.app {
       'pages/users/edit_name',
       'pages/users/edit_password',
       'pages/users/edit_email',
-      'pages/users/edit_tel'
+      'pages/users/edit_tel',
+      'pages/users/editIntro'
     ],
     window: {
       backgroundTextStyle: 'light',
