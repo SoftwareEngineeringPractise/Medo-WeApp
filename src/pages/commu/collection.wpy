@@ -1,0 +1,238 @@
+<style lang="less">
+.navbar {
+    .page,
+    .page__bd{
+        height: 100%;
+    }
+    .page__bd{
+        padding-bottom: 0;
+    }
+    .weui-tab__content{
+        padding-top: 60px;
+        text-align: center;
+    }
+}
+
+ .weui-media-box__info__meta {
+    margin: 0;
+    font-size: 12px;
+  }
+
+    .topic-info {
+    margin-top: 5px;
+  }
+  .topic-title {
+    white-space: normal;
+    font-size: 14px;
+    text-align: left;
+  }
+  .avatar {
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 50px;
+    height: 50px;
+  }
+</style>
+<template>
+    <view class="navbar page">
+        <view class="page__bd">
+            <view class="weui-tab">
+                <view class="weui-navbar">
+                    <view wx:for="{{tabs}}" wx:key="*this" id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" @tap="tabClick">
+                        <view class="weui-navbar__title">{{item}}</view>
+                    </view>
+                    <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+                </view>
+                <view class="weui-tab__panel">
+
+                    <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 0}}">
+                      <!--关注的人-->
+                      <view class="weui-panel weui-panel_access">
+                        <view class="weui-panel__bd">
+                          <repeat for="{{ followeesList }}" key="id" index="f_index" item="followee">
+                            <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                                <image class="weui-media-box__thumb avatar" src=""></image>
+                              </view>
+                              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                                <view class="weui-media-box__title topic-title">{{ followee.followId.username}}</view>
+                                <view class="weui-media-box__info topic-info">
+                                  <view class="weui-media-box__info__meta">简介or认证</view>
+                                </view>
+                              </view>
+                            </navigator>
+                          </repeat>
+                        </view>
+                      </view>
+                    </view>
+
+                    <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 1}}">
+                      <view class="weui-panel__bd">
+                        <repeat for="{{ noticeList }}" key="id" index="n_index" item="notice">
+                          <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                              <image class="weui-media-box__thumb avatar" src="{{notice.user.avatar}}"></image>
+                            </view>
+                            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                              <view class="weui-media-box__title">{{ notice.title }}</view>
+                              <view class="weui-media__info notice-info">
+                                <view class="weui-media-box__desc">{{ notice.description }}</view>
+                                <view class="weui-media-box__info__meta">{{ notice.author.username }}</view>
+                                <view class="weui-media-box__info__meta">{{ notice.addTime }}</view>
+                              </view>
+                            </view>
+                          </navigator>
+                        </repeat>
+                      </view>
+                    </view>
+
+                    <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 2}}">
+                      <view class="weui-panel__bd">
+                        <repeat for="{{ collectList }}" key="id" index="c_index" item="collect">
+                          <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                              <image class="weui-media-box__thumb avatar" src="{{ collect.user.avatar }}"></image>
+                            </view>
+                            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                              <view class="weui-media-box__title">{{ collect.contentId.title }}</view>
+                              <view class="weui-media__info notice-info">
+                                <view class="weui-media-box__desc">{{ collect.contentId.description }}</view>
+                                <view class="weui-media-box__info__meta">{{ collect.userId.username }}</view>
+                                <view class="weui-media-box__info__meta">{{ collect.contentId.addTime }}</view>
+                              </view>
+                            </view>
+                          </navigator>
+                        </repeat>
+                      </view>
+                    </view>
+
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import api from '@/utils/api'
+
+const sliderWidth = 96 // 需要设置slider的宽度，用于计算中间位置
+
+export default class Toast extends wepy.page {
+  config={
+        // enablePullDownRefresh: true,
+        navigationBarTitleText: 'My Collection'
+  }
+      data = {
+        tabs: ['关注', '动态', '收藏'],
+        activeIndex: 1,
+        sliderOffset: 0,
+        sliderLeft: 0,
+        followees: [],
+        followeesList: [],
+        noticeList: [],
+        collectList: []
+
+      };
+
+      methods = {
+        tabClick (e) {
+          this.sliderOffset = e.currentTarget.offsetLeft
+          this.activeIndex = e.currentTarget.id
+          console.log(this.activeIndex)
+          if (this.activeIndex === '0') {
+            console.log('xuanzhong!')
+            this.getFollowees()
+          }
+          if (this.activeIndex === '1') {
+            this.getNotice()
+          }
+          if (this.activeIndex === '2') {
+            this.getCollection()
+          }
+        }
+      }
+
+      async getFollowees() {
+        let token = await wepy.getStorageSync('token')
+        try {
+          let followeesResponse = await api.request({
+            url: 'api/wx/me/follows',
+            header: {
+              Authorization: token
+            },
+            method: 'GET'
+          })
+          if (followeesResponse.statusCode === 200) {
+            let followeesList = followeesResponse.data.data
+            this.followeesList = followeesList
+            this.$apply()
+            console.log('111')
+            console.log(this.followeesList[0].followId.username)
+          }
+        } catch (err) {
+          wepy.showModal({
+            title: '提示',
+            content: '发生错误，请重试'
+          })
+        }
+      }
+
+      async getNotice() {
+        try {
+          let token = await wepy.getStorageSync('token')
+          let noticelistResponse = await api.request({
+            url: 'api/wx/me/updatings',
+            header: {
+              'Authorization': token
+            },
+            method: 'GET'
+          })
+          let noticeList = noticelistResponse.data.data
+          this.noticeList = noticeList
+          this.$apply()
+        } catch (err) {
+          wepy.showModal({
+            title: '提示',
+            content: '发生错误，请重试'
+          })
+        }
+      }
+      async getCollection() {
+        try {
+          let token = await wepy.getStorageSync('token')
+          let collectListResponse = await api.request({
+            url: 'api/wx/me/favorites',
+            method: 'GET',
+            header: {
+              'Authorization': token
+            }
+          })
+          this.collectList = collectListResponse.data.data
+          this.$apply()
+        } catch (err) {
+          wepy.showModal({
+            title: '提示',
+            content: '发生错误，请重试'
+          })
+        }
+      }
+
+      async onPullDownRefresh() {
+        await this.getFollowees()
+        wepy.stopPullDownRefresh()
+      }
+
+      async onLoad () {
+        let res = await wepy.getSystemInfo()
+
+        this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
+        this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
+
+        this.getFollowees()
+        this.getNotice()
+        this.getCollection()
+      }
+    }
+</script>

@@ -66,7 +66,7 @@ export default class NoticeIndex extends wepy.page {
       // 请求最新公告列表接口
       let noticelistResponse = await api.request({
         url: 'api/wx/contents' + '?page=' + page,
-        headers: {
+        header: {
           'Content-Type': 'application/json'
         }
       })
