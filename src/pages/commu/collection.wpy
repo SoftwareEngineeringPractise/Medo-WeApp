@@ -67,7 +67,26 @@
                       </view>
                     </view>
 
-                    <view class="weui-tab__content" hidden="{{activeIndex != 1}}">选项二的内容</view>
+                    <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 1}}">
+                      <view class="weu-panel__bd">
+                        <repeat for="{{ noticeList }}" key="id" index="n_index" item="notice">
+                          <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                              <image class="weui-media-box__thumb avatar" src="{{notice.user.avatar}}"></image>
+                            </view>
+                            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                              <view class="weui-media-box__title">{{ notice.title }}</view>
+                              <view class="weui-media__info notice-info">
+                                <view class="weui-media-box__desc">{{ notice.description }}</view>
+                                <view class="weui-media-box__info__meta">{{ notice.author.username }}</view>
+                                <view class="weui-media-box__info__meta">{{ notice.addTime }}</view>
+                              </view>
+                            </view>
+                          </navigator>
+                        </repeat>
+                      </view>
+                    </view>
+
                     <view class="weui-tab__content" hidden="{{activeIndex != 2}}">选项三的内容</view>
                 </view>
             </view>
@@ -92,7 +111,8 @@ export default class Toast extends wepy.page {
         sliderOffset: 0,
         sliderLeft: 0,
         followees: [],
-        followeesList: []
+        followeesList: [],
+        noticeList: []
 
       };
 
@@ -104,6 +124,9 @@ export default class Toast extends wepy.page {
           if (this.activeIndex === '0') {
             console.log('xuanzhong!')
             this.getFollowees()
+          }
+          if (this.activeIndex === '1') {
+            this.getNotice()
           }
         }
       }
@@ -126,7 +149,31 @@ export default class Toast extends wepy.page {
             console.log(this.followeesList[0].followId.username)
           }
         } catch (err) {
+          wepy.showModal({
+            title: '提示',
+            content: '发生错误，请重试'
+          })
+        }
+      }
 
+      async getNotice() {
+        try {
+          let token = await wepy.getStorageSync('token')
+          let noticelistResponse = await api.request({
+            url: 'api/wx/me/updatings',
+            header: {
+              'Authorization': token
+            },
+            method: 'GET'
+          })
+          let noticeList = noticelistResponse.data.data
+          this.noticeList = noticeList
+          this.$apply()
+        } catch (err) {
+          wepy.showModal({
+            title: '提示',
+            content: '发生错误，请重试'
+          })
         }
       }
 
@@ -142,6 +189,7 @@ export default class Toast extends wepy.page {
         this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
 
         this.getFollowees()
+        this.getNotice()
       }
     }
 </script>
