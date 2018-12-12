@@ -78,6 +78,7 @@ export default class AddNotice extends wepy.page {
     notice: null,
     categories: ['www', 'wx'],
     categoryIndex: 0,
+    categorylist: null,
     errors: null
   }
   methods={
@@ -94,12 +95,39 @@ export default class AddNotice extends wepy.page {
     }
 
   }
+
+  async onShow() {
+    try {
+      let categorylist = await api.request({
+        url: 'api/wx/categories',
+        method: 'POST'
+      })
+
+      this.categorylist = categorylist.data.data
+
+      this.categories = []
+      for (var key in this.categorylist) {
+        // console.log(categories[key].name)
+        this.categories.push(this.categorylist[key].name)
+      }
+
+      // this.categories=categories
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '获取分类时出现错误，请重试'
+      })
+    }
+  }
 // TODO: 在提交前检查字数
+// TODO: 公告分类部分不完善，需要先从接口得到所有分类以及index再显示，再加入notice提交
   async submit(e) {
-    let token = wepy.getStorageSync('token')
+    let token = await wepy.getStorageSync('token')
     console.log(e.detail.value)
     this.notice = e.detail.value
-    this.notice.category = '5c10b56a182cca5560c6301b'
+    this.notice.category = this.categorylist[this.categoryIndex]._id
+    // this.notice.category = '5c10b56a182cca5560c6301b'
     this.errors = null
     try {
       let editResponse = await api.request({
@@ -118,7 +146,7 @@ export default class AddNotice extends wepy.page {
           icon: 'success',
           duration: 2000
         })
-        wepy.navigateBack()
+        setTimeout(() => { wx.navigateBack() }, 2000)
       }
     } catch (err) {
       console.log(err)
