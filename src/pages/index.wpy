@@ -26,7 +26,7 @@
                 <image class="weui-media-box__thumb" src="{{ notice.user.avatar }}" /></image>
               </view>
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title">标题——{{ notice.title }}</view>
+                <view class="weui-media-box__title">{{ notice.title }}</view>
                 <view class="weui-media__info notice-info">
                   <view class="weui-media-box__desc">{{ notice.description }}</view>
                   <view class="weui-media-box__info__meta">{{ notice.author.username }} </view>
@@ -34,7 +34,7 @@
 
                 </view>
               </view>
-              <view class="weui-badge reply-count">111{{ notice.views }}</view>
+              <view class="weui-badge reply-count">{{ notice.views }}</view>
             </navigator>
           </repeat>
         </view>
@@ -47,13 +47,16 @@ import wepy from 'wepy'
 import api from '@/utils/api'
 
 export default class NoticeIndex extends wepy.page {
+  config={
+    enablePullDownRefresh: true
+  }
   data={
     notice: [],
     page: 1
   }
   // 获取最新公告数据
   // TODO:需要完善代码，暂时接口还没有测试。。
-  async getNotice(page = 1) {
+  async getNotice(page = 1, reset = false) {
     try {
       // 请求最新公告列表接口
       let noticelistResponse = await api.request({
@@ -66,7 +69,7 @@ export default class NoticeIndex extends wepy.page {
       console.log(noticelist)
      // console.log(noticelist('doc'))
       // 合并到this.notice
-      this.notice = this.notice.concat(noticelist)
+      this.notice = reset ? noticelist : this.notice.concat(noticelist)
       console.log(this.notice)
       this.$apply()
     } catch (err) {
@@ -75,6 +78,12 @@ export default class NoticeIndex extends wepy.page {
         content: '发生错误，请重试'
       })
     }
+  }
+
+  async onPullDownRefresh() {
+    this.page = 1
+    await this.getNotice(1, true)
+    wepy.stopPullDownRefresh()
   }
 
   async onLoad() {
