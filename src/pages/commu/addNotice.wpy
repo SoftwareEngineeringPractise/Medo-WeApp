@@ -1,0 +1,132 @@
+<style>
+</style>
+<template>
+  <view class="page">
+    <view class="page__bd">
+      <form bindsubmit="submit">
+        <view class="weui-cells__title">公告标题</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="请输入标题" name="title" value=""/>
+          </view>
+          <view wx:if="{{ errors.title }}" class="weui-cell__ft">
+            <icon type="warn" size="23" color="#E64340"></icon>
+          </view>
+        </view>
+
+        <view wx:if="{{ errors.name }}" class="weui-cells__tips error-message">{{ errors.name[0] }}</view>
+
+        <view class="weui-cells__title">选择分类</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_select">
+            <view class="weui-cell__bd">
+              <picker @change="bindCategoryChange" value="{{ categoryIndex }}" range="{{ categories }}">
+                <view class="weui-select">{{ categories[categoryIndex]}}</view>
+              </picker>
+            </view>
+          </view>
+        </view>
+
+        <view class="weui-cells__title">简介</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">
+              <textarea class="weui-textarea" placeholder="请输入简介" style="height: 3.3em" name="description">
+              </textarea>
+              <view class="weui-textarea-counter">0/200</view>
+            </view>
+            <view wx:if="{{ errors.description }}" class="weui-cell__ft">
+               <icon type="warn" size="23" color="#E64340"></icon>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{ errors.description }}" class="weui-cells__tips error-message">{{ errors.description[0] }}</view>
+
+
+        <view class="weui-cells__title">正文</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">
+              <textarea class="weui-textarea" placeholder="请输入正文" style="height: 6.5em" name="content">
+              </textarea>
+              <view class="weui-textarea-counter">0/1000</view>
+            </view>
+            <view wx:if="{{ errors.contents }}" class="weui-cell__ft">
+              <icon type="warn" size="23" color="#E64340"></icon>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{ errors.contents }}" class="weui-cells__tips error-message">{{ errors.contents[0] }}</view>
+
+        <view class="weui-btn-area">
+          <button class="weui-btn" type="primary" formType="submit">修改</button>
+        </view>
+      </form>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import api from '@/utils/api'
+
+export default class AddNotice extends wepy.page {
+  config={
+    navigationBarTitleText: '发布公告'
+  }
+  data={
+    notice: null,
+    categories: ['www', 'wx'],
+    categoryIndex: 0,
+    errors: null
+  }
+  methods={
+    bindCategoryChange(e) {
+      console.log('picker category发生选择改变，携带值为', e.detail.value)
+      this.categoryIndex = e.detail.value
+    },
+    showTopTips() {
+      this.tipsFlag = true
+      setTimeout(() => {
+        this.tipsFlag = false
+        this.$apply()
+      }, 3000)
+    }
+
+  }
+// TODO: 在提交前检查字数
+  async submit(e) {
+    let token = wepy.getStorageSync('token')
+    console.log(e.detail.value)
+    this.notice = e.detail.value
+    this.notice.category = '5c10b56a182cca5560c6301b'
+    this.errors = null
+    try {
+      let editResponse = await api.request({
+        url: 'api/wx/content/post',
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': token
+        },
+        data: this.notice
+      })
+
+      if (editResponse.statusCode === 200) {
+        await wepy.showToast({
+          title: '发布成功',
+          icon: 'success',
+          duration: 2000
+        })
+        wepy.navigateBack()
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '出现错误，请重试'
+      })
+    }
+  }
+}
+</script>
