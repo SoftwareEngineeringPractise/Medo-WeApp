@@ -14,7 +14,6 @@
   background-color:#d8d8d8;
   float:right;
 }
-
 </style>
 <template>
   <view class="page">
@@ -29,11 +28,13 @@
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
                 <view class="weui-media-box__title">标题——{{ notice.title }}</view>
                 <view class="weui-media__info notice-info">
-                  <view class="weui-media-box__info__meta">{{ notice.user.name }} </view>
-                  <view class="weui-media-box__info__meta">{{ notice.updated_at }}</view>
+                  <view class="weui-media-box__desc">{{ notice.description }}</view>
+                  <view class="weui-media-box__info__meta">{{ notice.author.username }} </view>
+                  <view class="weui-media-box__info__meta">{{ notice.addTime }}</view>
+
                 </view>
               </view>
-              <view class="weui-badge reply-count">111{{ notice.reply_count }}</view>
+              <view class="weui-badge reply-count">111{{ notice.views }}</view>
             </navigator>
           </repeat>
         </view>
@@ -47,38 +48,38 @@ import api from '@/utils/api'
 
 export default class NoticeIndex extends wepy.page {
   data={
-    notice:[],
-    page:1
+    notice: [],
+    page: 1
   }
-  //获取最新公告数据
-  //TODO:需要完善代码，暂时接口还没有测试。。
-  async getNotice(page=1){
-    try{
-      //请求最新公告列表接口
-      let noticelistResponse=await api.request({
-        url:
-        data:{
-
+  // 获取最新公告数据
+  // TODO:需要完善代码，暂时接口还没有测试。。
+  async getNotice(page = 1) {
+    try {
+      // 请求最新公告列表接口
+      let noticelistResponse = await api.request({
+        url: 'api/wx/contents',
+        headers: {
+          'Content-Type': 'application/json'
         }
-
       })
-      let noticelist=noticelistResponse.data.data
-      //合并到this.notice
-      this.notice=this.notice.concat(noticelist)
+      let noticelist = noticelistResponse.data.data.docs
+      console.log(noticelist)
+     // console.log(noticelist('doc'))
+      // 合并到this.notice
+      this.notice = this.notice.concat(noticelist)
+      console.log(this.notice)
       this.$apply()
-    }catch(err){
+    } catch (err) {
       wepy.showModal({
-        title:'提示',
-        content:'发生错误，请重试'
+        title: '提示',
+        content: '发生错误，请重试'
       })
     }
   }
 
-  async onLoad(){
+  async onLoad() {
     this.getNotice()
   }
-
-
 }
 
 </script>
