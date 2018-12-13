@@ -1,4 +1,20 @@
 <style lang="less">
+.logohead{
+  postion:absolute;
+  left:0;
+  top:0;
+  right:0;
+  height:80px;
+  border-top:4px solid #00b5ad;
+  border-bottom:1px solid #00b5ad;
+  color:#00b5ad;
+  font-size:65px;
+  background-color:#FFFFFF;
+}
+.logo{
+  postion:relative;
+  top:80%;
+}
 .weui-media-box__info__meta{
   magin: 0;
   font-size: 12px;
@@ -17,6 +33,11 @@
 </style>
 <template>
   <view class="page">
+    <view class="logohead">
+      <view class="logo">
+        M e D o
+        </view>
+      </view>
     <view class="page__bd">
       <view class="weui-panel weui-panel_access">
         <view class="weui-panel__bd">
