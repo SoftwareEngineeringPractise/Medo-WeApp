@@ -53,7 +53,7 @@ page{
       <view class="weui-cells weui-cells_after-title pagehead">
         <navigator class="weui-cell">
           <view class="weui-cell__hd avatar-wrap">
-            <image class="avatar" src=""/></image>
+            <image class="avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"/></image>
           </view>
           <view class="weui-cell__bd">
             <view>{{ user.username }}</view>
@@ -188,6 +188,7 @@ export default class UserShow extends wepy.page {
     this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
     this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
     this.getUser(options.id)
+    console.log(options)
     this.getNotice(options.id)
   }
 }
