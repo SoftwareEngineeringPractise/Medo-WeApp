@@ -46,19 +46,36 @@ page{
   background-color:#d8d8d8;
   float:right;
 }
+.button-sp-area{
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-right:10px;
+    width: 60%;
+}
+.mini-btn{
+    margin-right: 5px;
+}
+.userintro{
+  font-size:10px;
+}
 </style>
 <template>
   <view class="page">
     <view class="page__bd">
       <view class="weui-cells weui-cells_after-title pagehead">
-        <navigator class="weui-cell">
-          <view class="weui-cell__hd avatar-wrap">
+        <view class="weui-cell">
+          <view class="weui-cell__hd avatar-wrap" url="/pages">
             <image class="avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"/></image>
           </view>
           <view class="weui-cell__bd">
-            <view>{{ user.username }}</view>
+            <view>{{ user.username }}
+              <view wx:if="{{user.verified}}" class="userintro">
+              北京大学{{}}   工学院生医系教授{{}}  <icon type="success" size="20"></icon></view>
+            </view>
+            <button wx:if="{{ !followed}}" class="weui-btn mini-btn" type="primary" size="mini" bindtap="follow">+关注</button>
+            <button wx:elif class="weui-btn mini-btn" type="default" size="mini" bindtap="unfollow">取消关注</button>
           </view>
-        </navigator>
+        </view>
       </view>
       <view class="navbar page__bd">
         <view class="weui-tab">
@@ -118,7 +135,8 @@ export default class UserShow extends wepy.page {
     user: null,
     noticeList: [],
     page: 1,
-    noMoreData_notice: false
+    noMoreData_notice: false,
+    followed: false
   }
 
   methods={
@@ -126,6 +144,7 @@ export default class UserShow extends wepy.page {
       this.sliderOffset = e.currentTarget.offsetLeft
       this.activeIndex = e.currentTarget.id
     }
+
   }
 
   async getUser(id) {
@@ -169,6 +188,60 @@ export default class UserShow extends wepy.page {
       wepy.showModal({
         title: '提示',
         content: '发生错误'
+      })
+    }
+  }
+
+  async follow() {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let followResponse = await api.request({
+        url: 'api/wx/follow/' + this.user.userInfo.userId + '/add',
+        method: 'POST',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (followResponse.statusCode === 200) {
+        wx.showToast({
+          title: followResponse.data.meta.message,
+          icon: 'success',
+          duration: 3000
+        })
+        this.followed = true
+        this.$apply()
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '发生错误'
+      })
+    }
+  }
+
+  async unfollow() {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let followResponse = await api.request({
+        url: 'api/wx/follow/' + this.user.userInfo.userId + '/delete',
+        method: 'POST',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (followResponse.statusCode === 200) {
+        wx.showToast({
+          title: followResponse.data.meta.message,
+          icon: 'success',
+          duration: 3000
+        })
+        this.followed = false
+        this.$apply()
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '发生错误'
       })
     }
   }

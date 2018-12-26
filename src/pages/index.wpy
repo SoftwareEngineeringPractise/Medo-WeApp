@@ -98,7 +98,6 @@
 <script>
 import wepy from 'wepy'
 import api from '@/utils/api'
-// var wxSearch = require('../utils/wxSearchView/wxSearchView.js')
 export default class NoticeIndex extends wepy.page {
   config={
     enablePullDownRefresh: true

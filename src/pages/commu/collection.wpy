@@ -51,7 +51,7 @@
                       <view class="weui-panel weui-panel_access">
                         <view class="weui-panel__bd">
                           <repeat for="{{ followeesList }}" key="id" index="f_index" item="followee">
-                            <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                            <navigator url="/pages/users/showuser?id={{followee.followId._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
                               <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
                                 <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
                               </view>
