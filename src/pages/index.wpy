@@ -1,4 +1,14 @@
 <style lang="less">
+.searchbar-result{
+    margin-top: 0;
+    font-size: 14px;
+}
+.searchbar-result:before{
+    display: none;
+}
+.weui-cell{
+    padding: 12px 15px 12px 35px;
+}
 .logohead{
   postion:absolute;
   left:0;
@@ -35,16 +45,35 @@
   <view class="page">
     <view class="logohead">
       <view class="logo">
-        M e D o
+        MeDo
         </view>
       </view>
+      <view class="weui-cell">
+        <view class="weui-search-bar">
+                <view class="weui-search-bar__form">
+                    <view class="weui-search-bar__box">
+                        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                        <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                        <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                            <icon type="clear" size="14"></icon>
+                        </view>
+                    </view>
+                    <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                        <icon class="weui-icon-search" type="search" size="14"></icon>
+                        <view class="weui-search-bar__text">搜索</view>
+                    </label>
+                </view>
+                <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+            </view>
+      </view>
+
     <view class="page__bd">
       <view class="weui-panel weui-panel_access">
         <view class="weui-panel__bd">
           <repeat for="{{ notice }}" key="id" index="index" item="notice">
             <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                <image class="weui-media-box__thumb" src="{{ notice.user.avatar }}" /></image>
+              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" url="/pages/users/showuser?id={{ notice.author._id }}">
+                <image class="weui-media-box__thumb" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"/></image>
               </view>
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
                 <view class="weui-media-box__title">{{ notice.title }}</view>
@@ -69,7 +98,7 @@
 <script>
 import wepy from 'wepy'
 import api from '@/utils/api'
-
+// var wxSearch = require('../utils/wxSearchView/wxSearchView.js')
 export default class NoticeIndex extends wepy.page {
   config={
     enablePullDownRefresh: true
