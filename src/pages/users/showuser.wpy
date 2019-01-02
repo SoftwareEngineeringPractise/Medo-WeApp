@@ -128,7 +128,7 @@ page{
 
             <view class="weui-tab__content" hidden="{{activeIndex !=2 }}">
               <!--浮动的图标，写评价-->
-              <view bindtap>
+              <view bindtap="Addcomment">
                 <image class="post" src="/images/post.png"></image>
               </view>
 
@@ -272,6 +272,12 @@ export default class UserShow extends wepy.page {
     }
   }
 
+  async Addcomment() {
+    wx.navigateTo({
+      url: '/pages/commu/addcomment?id=' + this.user.userInfo.userId
+    })
+  }
+
   async onReachBottom() {
     if (this.noMoreData_notice) {
       return
@@ -286,7 +292,12 @@ export default class UserShow extends wepy.page {
 
     this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
     this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
-    this.getUser(options.id)
+    if (options.id) {
+      this.getUser(options.id)
+    } else {
+      this.getUser('me')
+    }
+
     console.log(options)
     this.getNotice(options.id)
   }

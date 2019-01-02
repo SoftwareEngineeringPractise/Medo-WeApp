@@ -50,7 +50,8 @@ export default class extends wepy.app {
       'pages/users/editIntro',
       'pages/commu/addNotice',
       'pages/commu/collection',
-      'pages/users/showuser'
+      'pages/users/showuser',
+      'pages/commu/addcomment'
     ],
     window: {
       backgroundTextStyle: 'light',

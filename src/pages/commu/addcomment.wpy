@@ -1,0 +1,76 @@
+<style>
+</style>
+<template>
+  <view class="page">
+    <view class="page__bd">
+      <form bindsubmit="submit">
+        <view class="weui-cells__title">添加评价</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell__bd">
+            <textarea class="weui-textarea" name="comment" style="height: 6.5em" placeholder="你觉得这位老师怎么样？评价以下吧">
+            </textarea>
+          </view>
+        </view>
+        <view class="weui-btn-area">
+          <button class="weui-btn" type="primary" formType="submit">发布</button>
+        </view>
+
+      </form>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import api from '@/utils/api'
+
+export default class AddComments extends wepy.page {
+  config={
+    navigationBarTitleText: '评价'
+  }
+  data={
+    t_id: null,
+    comment: null
+  }
+
+  async submit(e) {
+    let token = await wepy.getStorageSync('token')
+    console.log(e.detail.value)
+    this.comment = e.detail.value
+    try {
+      let commentResponse = await api.request({
+        url: 'api/wx/comment/' + this.t_id + '/post',
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': token
+        },
+        data: this.comment
+      })
+      if (commentResponse.statusCode === 200) {
+        await wepy.showToast({
+          title: '发布成功',
+          icon: 'success',
+          duration: 2000
+        })
+        setTimeout(() => { wx.navigateBack() }, 2000)
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModel({
+        title: '提示',
+        content: '出现错误'
+      })
+    }
+  }
+
+  async onShow() {
+
+  }
+
+  async onLoad(options) {
+    console.log(options)
+    this.t_id = options.id
+  }
+}
+
+</script>
