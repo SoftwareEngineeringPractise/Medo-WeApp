@@ -1,0 +1,80 @@
+<style>
+page{
+  background-color:#FFFFFF;
+}
+
+</style>
+
+<template>
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">{{notice.title}}</view>
+    <view class="page__desc">{{notice.addTime}}</view>
+  </view>
+  <!--TODO：插入作者栏-->
+
+  <view class="weui-media-box weui-media-box_small-appmsg ">
+    <view class="weui-cells weui-cells_in-small-appmsg">
+    <navigator url="/pages/users/showuser?id={{notice.author._id}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__hd"><image src="/images/user_selected.png" style="width:20px;height:20px;margin-right:5px"/></image>
+      </view>
+      <view class="weui-cell__bd weui-cell_primary">
+        {{notice.author.username }}
+      </view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+  </view>
+  </view>
+
+  <view class="page__bd">
+    <view class="weui-article">
+      <view class="weui-article__h1">{{notice.description}}</view>
+      <view class="weui-article__section">
+        <view class="weui-article__p">
+          {{notice.content}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import api from '@/utils/api'
+
+export default class NoticeShow extends wepy.page {
+  config={
+    navigationBarTitleText: '公告详情'
+  }
+  data={
+    notice: null
+  }
+
+  async getNotice(id) {
+    try {
+      let noticeResponse = await api.request({
+        url: 'api/wx/views?contentid=' + id,
+        method: 'GET'
+      })
+      if (noticeResponse.statusCode === 200) {
+        this.notice = noticeResponse.data.data.content
+        this.$apply()
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
+  }
+
+  async onLoad(options) {
+    if (options.id) {
+      this.getNotice(options.id)
+    }
+    console.log(options)
+  }
+}
+</script>
