@@ -9,9 +9,15 @@ page{
 <view class="page">
   <view class="page__hd">
     <view class="page__title">{{notice.title}}</view>
-    <view class="page__desc">{{notice.addTime}}</view>
+    <view class="page__desc">{{notice.addTime}}
+      <view class="weui-cell__ft" wx:if="{{!collected}}" bindtap="collect">
+      <image  src="/images/star_1.png" style="width:40px;height:40px;" ></image>
+      </view>
+      <view wx:elif class="weui-cell__ft"  bindtap="cancelcollect">
+      <image  src="/images/star_2.png" style="width:40px;height:40px;" ></image>
+      </view>
+    </view>
   </view>
-  <!--TODO：插入作者栏-->
 
   <view class="weui-media-box weui-media-box_small-appmsg ">
     <view class="weui-cells weui-cells_in-small-appmsg">
@@ -48,7 +54,57 @@ export default class NoticeShow extends wepy.page {
     navigationBarTitleText: '公告详情'
   }
   data={
-    notice: null
+    notice: null,
+    collected: true
+  }
+
+  async collect() {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let collectResponse = await api.request({
+        url: 'api/wx/favorite/' + this.notice._id + '/add',
+        method: 'POST',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (collectResponse.statusCode === 200) {
+        if (collectResponse.data.meta.code === 0) {
+          console.log(this.collected)
+          this.collected = true
+          this.$apply()
+        }
+      }
+      console.log(collectResponse)
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
+  }
+
+  async ifcollected(id) {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let ifResponse = await api.request({
+        url: 'api/wx/favorites/' + id,
+        method: 'POST',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (ifResponse.statusCode === 200 && ifResponse.data.meta.code === 0) {
+        this.collected = ifResponse.data.data.favorite
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
   }
 
   async getNotice(id) {
@@ -73,6 +129,8 @@ export default class NoticeShow extends wepy.page {
   async onLoad(options) {
     if (options.id) {
       this.getNotice(options.id)
+      this.ifcollected(options.id)
+      this.$apply()
     }
     console.log(options)
   }
