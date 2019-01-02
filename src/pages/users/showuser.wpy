@@ -58,6 +58,19 @@ page{
 .userintro{
   font-size:10px;
 }
+.post{
+  float:right;
+  background-color:#FFFFFF;
+  position: fixed;
+  bottom:30px;
+  right:20px;
+  border:0 solid #FFFFFF;
+  box-shadow:4px 1px 1px #cccccc;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+
+}
 </style>
 <template>
   <view class="page">
@@ -86,7 +99,10 @@ page{
             <view class="weui-navbar__slider" style="left: {{ sliderLeft }}px; transform: translateX({{ sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
           </view>
           <view class="weui-tab__panel">
-            <view class="weui-tab__content" hidden="{{activeIndex !=0 }}">这个暂时还没有</view>
+            <view class="weui-tab__content" hidden="{{activeIndex !=0 }}">这个暂时还没有
+
+            </view>
+
             <view class="weui-panel__bd" hidden="{{activeIndex !=1 }}">
               <view class="weui-panel__bd">
                 <repeat for="{{noticeList}}" key="id" index="n_index" item="notice">
@@ -110,7 +126,17 @@ page{
               </view>
             </view>
 
-            <view class="weui-tab__content" hidden="{{activeIndex !=2 }}">选项三</view>
+            <view class="weui-tab__content" hidden="{{activeIndex !=2 }}">
+              <!--浮动的图标，写评价-->
+              <view bindtap>
+                <image class="post" src="/images/post.png"></image>
+              </view>
+
+
+
+
+            </view>
+
           </view>
         </view>
       </view>
