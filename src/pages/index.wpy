@@ -137,12 +137,14 @@ export default class NoticeIndex extends wepy.page {
               data: {
                 searchList: query1Response.data.data
               }
-            }, {
+            })
+            wx.setStorage({
               key: 'searchDepartment',
               data: {
                 searchList: query2Response.data.data
               }
-            }, {
+            })
+            wx.setStorage({
               key: 'searchSchool',
               data: {
                 searchList: query3Response.data.data
