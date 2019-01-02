@@ -53,7 +53,8 @@ export default class extends wepy.app {
       'pages/users/showuser',
       'pages/commu/addcomment',
       'pages/commu/shownotice',
-      'pages/search'
+      'pages/search',
+      'pages/auth/register'
     ],
     window: {
       backgroundTextStyle: 'light',
