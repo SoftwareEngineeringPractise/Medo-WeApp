@@ -58,6 +58,32 @@ export default class NoticeShow extends wepy.page {
     collected: true
   }
 
+  async cancelcollect() {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let cancelResponse = await api.request({
+        url: 'api/wx/favorite/' + this.notice._id + '/delete',
+        method: 'POST',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (cancelResponse.statusCode === 200) {
+        if (cancelResponse.data.meta.code === 0) {
+          this.collected = false
+          this.$apply()
+        }
+      }
+      console.log(cancelResponse)
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
+  }
+
   async collect() {
     try {
       let token = await wepy.getStorageSync('token')
@@ -129,7 +155,7 @@ export default class NoticeShow extends wepy.page {
   async onLoad(options) {
     if (options.id) {
       this.getNotice(options.id)
-      this.ifcollected(options.id)
+      await this.ifcollected(options.id)
       this.$apply()
     }
     console.log(options)
