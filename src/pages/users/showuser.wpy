@@ -131,9 +131,19 @@ page{
               <view bindtap="Addcomment">
                 <image class="post" src="/images/post.png"></image>
               </view>
-
-
-
+              <!--评价列表-->
+              <repeat for="{{commentList}}" key="id" index="n_index" item="comment">
+                <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                    <image class="weui-media-box__thumb avatar" src=""></image>
+                  </view>
+                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                    <view class="weui-media-box__info__meta">{{comment.username }}</view>
+                    <view class="weui-media-box__title">{{ comment.content }}</view>
+                    <view class="weui-media-box__info__meta">{{comment.postTime}}</view>
+                  </view>
+                </view>
+              </repeat>
 
             </view>
 
@@ -162,7 +172,8 @@ export default class UserShow extends wepy.page {
     noticeList: [],
     page: 1,
     noMoreData_notice: false,
-    followed: false
+    followed: false,
+    commentList: []
   }
 
   methods={
@@ -208,6 +219,28 @@ export default class UserShow extends wepy.page {
       if (noticeList.page === noticeList.pages) {
         this.noMoreData_notice = true
       }
+      this.$apply()
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
+  }
+
+  async getComment(id) {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let commentResponse = await api.request({
+        url: 'api/wx/comment/' + id,
+        method: 'GET',
+        header: {
+          'Authorization': token
+        }
+      })
+      let commentList = commentResponse.data.data
+      this.commentList = commentList
       this.$apply()
     } catch (err) {
       console.log(err)
@@ -279,6 +312,9 @@ export default class UserShow extends wepy.page {
   }
 
   async onReachBottom() {
+    if (this.activeIndex !== 1) {
+      return
+    }
     if (this.noMoreData_notice) {
       return
     }
@@ -294,12 +330,16 @@ export default class UserShow extends wepy.page {
     this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
     if (options.id) {
       this.getUser(options.id)
+      this.getNotice(options.id)
+      this.getComment(options.id)
     } else {
       this.getUser('me')
+      this.getComment('me')
+      let me = await this.$parent.getCurrentUser()
+      this.getNotice(me.userInfo.userId)
     }
 
     console.log(options)
-    this.getNotice(options.id)
   }
 }
 
