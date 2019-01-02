@@ -9,50 +9,50 @@
             <navigator url="/pages/users/showuser?id={{qU._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
               <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" style="position:relative;">
                 <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
-                <view wx:if="{{qU.verified}}"class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
+                <view wx:if= "{{qU.verified}}" class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
               </view>
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
                 <view class="weui-media-box__title topic-title">{{qU.username}}</view>
                 <view class="weui-media-box__info topic-info">
-                  <!--
-                  <view class="weui-media-box__info__meta">{{qU.}}school</view>
+
+                  <view class="weui-media-box__info__meta">{{}}school</view>
                   <view class="weui-media-box__info__meta">{{}} department</view>
-                -->
+
                 </view>
               </view>
             </navigator>
           </repeat>
           <repeat for="{{queryschoolList}}" key="id" index="index" item="qU">
-            <navigator url="/pages/users/showuser?id={{qU._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+            <navigator url="/pages/users/showuser?id={{qU.userId._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
               <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" style="position:relative;">
                 <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
-                <view wx:if="{{qU.verified}}"class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
+                <view wx:if="{{qU.userId.verified}}" class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
               </view>
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title topic-title">{{qU.username}}</view>
+                <view class="weui-media-box__title topic-title">{{qU.userId.username}}</view>
                 <view class="weui-media-box__info topic-info">
-                  <!--
-                  <view class="weui-media-box__info__meta">{{qU.}}school</view>
-                  <view class="weui-media-box__info__meta">{{}} department</view>
-                -->
+
+                  <view class="weui-media-box__info__meta">{{qU.school}}</view>
+                  <view class="weui-media-box__info__meta">{{qU.department}} </view>
+
                 </view>
               </view>
             </navigator>
           </repeat>
 
            <repeat for="{{queryDepartmentList}}" key="id" index="index" item="qU">
-            <navigator url="/pages/users/showuser?id={{qU._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+            <navigator url="/pages/users/showuser?id={{qU.userId._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
               <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" style="position:relative;">
                 <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
-                <view wx:if="{{qU.verified}}"class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
+                <view wx:if="{{qU.userId.verified}}" class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
               </view>
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title topic-title">{{qU.username}}</view>
+                <view class="weui-media-box__title topic-title">{{qU.userId.username}}</view>
                 <view class="weui-media-box__info topic-info">
-                  <!--
-                  <view class="weui-media-box__info__meta">{{qU.}}school</view>
-                  <view class="weui-media-box__info__meta">{{}} department</view>
-                -->
+
+                  <view class="weui-media-box__info__meta">{{qU.school}}</view>
+                  <view class="weui-media-box__info__meta">{{qU.department}}</view>
+
                 </view>
               </view>
             </navigator>
