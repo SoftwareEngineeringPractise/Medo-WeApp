@@ -126,7 +126,7 @@ export default class Toast extends wepy.page {
   }
       data = {
         tabs: ['关注', '动态', '收藏'],
-        activeIndex: 1,
+        activeIndex: 0,
         sliderOffset: 0,
         sliderLeft: 0,
         followees: [],
@@ -142,7 +142,7 @@ export default class Toast extends wepy.page {
           this.activeIndex = e.currentTarget.id
           console.log(this.activeIndex)
           if (this.activeIndex === '0') {
-            console.log('xuanzhong!')
+            // console.log('xuanzhong!')
             this.getFollowees()
           }
           if (this.activeIndex === '1') {
@@ -169,9 +169,10 @@ export default class Toast extends wepy.page {
             this.followeesList = followeesList
             this.$apply()
             console.log('111')
-            console.log(this.followeesList[0].followId.username)
+            // console.log(this.followeesList[0].followId.username)
           }
         } catch (err) {
+          console.log(err)
           wepy.showModal({
             title: '提示',
             content: '发生错误，请重试'
@@ -185,6 +186,7 @@ export default class Toast extends wepy.page {
           let noticelistResponse = await api.request({
             url: 'api/wx/me/updatings',
             header: {
+
               'Authorization': token
             },
             method: 'GET'
@@ -193,12 +195,14 @@ export default class Toast extends wepy.page {
           this.noticeList = noticeList
           this.$apply()
         } catch (err) {
+          console.log(err)
           wepy.showModal({
             title: '提示',
             content: '发生错误，请重试'
           })
         }
       }
+
       async getCollection() {
         try {
           let token = await wepy.getStorageSync('token')
