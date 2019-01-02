@@ -117,47 +117,49 @@ export default class NoticeIndex extends wepy.page {
     },
 
     async query(e) {
-      try {
-        let query1Response = await api.request({
-          url: 'api/wx/search/username/' + e.detail.value,
-          method: 'GET'
-        })
-        let query2Response = await api.request({
-          url: 'api/wx/search/department/' + e.detail.value,
-          method: 'GET'
-        })
-        let query3Response = await api.request({
-          url: 'api/wx/search/school/' + e.detail.value,
-          method: 'GET'
-        })
-        if (query1Response.statusCode === 200 && query2Response.statusCode === 200 && query3Response.statusCode === 200) {
-          wx.setStorage({
-            key: 'searchUsername',
-            data: {
-              searchList: query1Response.data.data
-            }
-          }, {
-            key: 'searchDepartment',
-            data: {
-              searchList: query2Response.data.data
-            }
-          }, {
-            key: 'searchSchool',
-            data: {
-              searchList: query3Response.data.data
-            }
+      if (e.detail.value) {
+        try {
+          let query1Response = await api.request({
+            url: 'api/wx/search/username/' + e.detail.value,
+            method: 'GET'
           })
+          let query2Response = await api.request({
+            url: 'api/wx/search/department/' + e.detail.value,
+            method: 'GET'
+          })
+          let query3Response = await api.request({
+            url: 'api/wx/search/school/' + e.detail.value,
+            method: 'GET'
+          })
+          if (query1Response.statusCode === 200 && query2Response.statusCode === 200 && query3Response.statusCode === 200) {
+            wx.setStorage({
+              key: 'searchUsername',
+              data: {
+                searchList: query1Response.data.data
+              }
+            }, {
+              key: 'searchDepartment',
+              data: {
+                searchList: query2Response.data.data
+              }
+            }, {
+              key: 'searchSchool',
+              data: {
+                searchList: query3Response.data.data
+              }
+            })
 
-          wx.navigateTo({
-            url: 'pages/search'
+            wx.navigateTo({
+              url: './search'
+            })
+          }
+        } catch (err) {
+          console.log(err)
+          wepy.showModal({
+            title: '提示',
+            content: '发生错误，请重试'
           })
         }
-      } catch (err) {
-        console.log(err)
-        wepy.showModal({
-          title: '提示',
-          content: '发生错误，请重试'
-        })
       }
     }
   }

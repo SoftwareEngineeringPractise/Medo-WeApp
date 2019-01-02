@@ -1,0 +1,87 @@
+<style>
+</style>
+<template>
+  <view class="page">
+    <view class="page__bd">
+      <view class="weui-panel weui-panel_access">
+        <view class="weui-panel__bd">
+          <repeat for="{{queryusernameList}}" key="id" index="index" item="qU">
+            <navigator url="/pages/users/showuser?id={{qU._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" style="position:relative;">
+                <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
+                <view wx:if="{{qU.verified}}"class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
+              </view>
+              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                <view class="weui-media-box__title topic-title">{{qU.username}}</view>
+                <view class="weui-media-box__info topic-info">
+                  <!--
+                  <view class="weui-media-box__info__meta">{{qU.}}school</view>
+                  <view class="weui-media-box__info__meta">{{}} department</view>
+                -->
+                </view>
+              </view>
+            </navigator>
+          </repeat>
+          <repeat for="{{queryschoolList}}" key="id" index="index" item="qU">
+            <navigator url="/pages/users/showuser?id={{qU._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" style="position:relative;">
+                <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
+                <view wx:if="{{qU.verified}}"class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
+              </view>
+              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                <view class="weui-media-box__title topic-title">{{qU.username}}</view>
+                <view class="weui-media-box__info topic-info">
+                  <!--
+                  <view class="weui-media-box__info__meta">{{qU.}}school</view>
+                  <view class="weui-media-box__info__meta">{{}} department</view>
+                -->
+                </view>
+              </view>
+            </navigator>
+          </repeat>
+
+           <repeat for="{{queryDepartmentList}}" key="id" index="index" item="qU">
+            <navigator url="/pages/users/showuser?id={{qU._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" style="position:relative;">
+                <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
+                <view wx:if="{{qU.verified}}"class="weui-badge" style="position:absolute;bottom:-0.4em;right:-0.4em;">v</view>
+              </view>
+              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                <view class="weui-media-box__title topic-title">{{qU.username}}</view>
+                <view class="weui-media-box__info topic-info">
+                  <!--
+                  <view class="weui-media-box__info__meta">{{qU.}}school</view>
+                  <view class="weui-media-box__info__meta">{{}} department</view>
+                -->
+                </view>
+              </view>
+            </navigator>
+          </repeat>
+
+        </view>
+      </view>
+    </view>
+  </view>
+
+</template>
+<script>
+import wepy from 'wepy'
+// import api from '@/utils/api'
+
+export default class QueryShow extends wepy.page {
+  data={
+    queryusernameList: [],
+    queryschoolList: [],
+    queryDepartmentList: []
+  }
+  async onShow() {
+    let query1 = await wepy.getStorageSync('searchUsername')
+    let query3 = await wepy.getStorageSync('searchSchool')
+    let query2 = await wepy.getStorageSync('searchDepartment')
+    this.queryusernameList = query1.searchList
+    this.queryDepartmentList = query2.searchList
+    this.queryschoolList = query3.searchList
+    this.$apply()
+  }
+}
+</script>
