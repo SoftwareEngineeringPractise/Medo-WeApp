@@ -1,4 +1,16 @@
 <style lang="less">
+.search{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  width:95%;
+  height:100rpx;
+  background-color:white;
+  margin-top:1%;
+  border:1rpx solid #66cccc;
+  border-radius:2rpx;
+}
 .searchbar-result{
     margin-top: 0;
     font-size: 14px;
@@ -49,22 +61,11 @@
         </view>
       </view>
       <view class="weui-cell">
-        <view class="weui-search-bar">
-                <view class="weui-search-bar__form">
-                    <view class="weui-search-bar__box">
-                        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-                        <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
-                        <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
-                            <icon type="clear" size="14"></icon>
-                        </view>
-                    </view>
-                    <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
-                        <icon class="weui-icon-search" type="search" size="14"></icon>
-                        <view class="weui-search-bar__text">搜索</view>
-                    </label>
-                </view>
-                <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
-            </view>
+        <view class="search">
+          <input type="text" placeholder="输入你想要的内容" confirm-type="search" value="{{inputValue}}" bindinput="inputTyping" bindconfirm="query"/>
+
+          <icon class="weui-icon-search" type="search" size="14"></icon>
+        </view>
       </view>
 
     <view class="page__bd">
@@ -105,9 +106,62 @@ export default class NoticeIndex extends wepy.page {
   data={
     notice: [],
     page: 1,
-    noMoreData: false
+    noMoreData: false,
+    inputValue: ''// 搜索的内容
 
   }
+  methods={
+    inputTyping(e) {
+      this.inputValue = e.detail.value
+      console.log('bindInput' + this.inputValue)
+    },
+
+    async query(e) {
+      try {
+        let query1Response = await api.request({
+          url: 'api/wx/search/username/' + e.detail.value,
+          method: 'GET'
+        })
+        let query2Response = await api.request({
+          url: 'api/wx/search/department/' + e.detail.value,
+          method: 'GET'
+        })
+        let query3Response = await api.request({
+          url: 'api/wx/search/school/' + e.detail.value,
+          method: 'GET'
+        })
+        if (query1Response.statusCode === 200 && query2Response.statusCode === 200 && query3Response.statusCode === 200) {
+          wx.setStorage({
+            key: 'searchUsername',
+            data: {
+              searchList: query1Response.data.data
+            }
+          }, {
+            key: 'searchDepartment',
+            data: {
+              searchList: query2Response.data.data
+            }
+          }, {
+            key: 'searchSchool',
+            data: {
+              searchList: query3Response.data.data
+            }
+          })
+
+          wx.navigateTo({
+            url: 'pages/search'
+          })
+        }
+      } catch (err) {
+        console.log(err)
+        wepy.showModal({
+          title: '提示',
+          content: '发生错误，请重试'
+        })
+      }
+    }
+  }
+
   // 获取最新公告数据
   // TODO:需要完善代码，。
   async getNotice(page = 1, reset = false) {
