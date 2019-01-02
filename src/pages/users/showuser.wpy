@@ -58,6 +58,19 @@ page{
 .userintro{
   font-size:10px;
 }
+.post{
+  float:right;
+  background-color:#FFFFFF;
+  position: fixed;
+  bottom:30px;
+  right:20px;
+  border:0 solid #FFFFFF;
+  box-shadow:4px 1px 1px #cccccc;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+
+}
 </style>
 <template>
   <view class="page">
@@ -86,7 +99,10 @@ page{
             <view class="weui-navbar__slider" style="left: {{ sliderLeft }}px; transform: translateX({{ sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
           </view>
           <view class="weui-tab__panel">
-            <view class="weui-tab__content" hidden="{{activeIndex !=0 }}">这个暂时还没有</view>
+            <view class="weui-tab__content" hidden="{{activeIndex !=0 }}">这个暂时还没有
+
+            </view>
+
             <view class="weui-panel__bd" hidden="{{activeIndex !=1 }}">
               <view class="weui-panel__bd">
                 <repeat for="{{noticeList}}" key="id" index="n_index" item="notice">
@@ -110,7 +126,17 @@ page{
               </view>
             </view>
 
-            <view class="weui-tab__content" hidden="{{activeIndex !=2 }}">选项三</view>
+            <view class="weui-tab__content" hidden="{{activeIndex !=2 }}">
+              <!--浮动的图标，写评价-->
+              <view bindtap="Addcomment">
+                <image class="post" src="/images/post.png"></image>
+              </view>
+
+
+
+
+            </view>
+
           </view>
         </view>
       </view>
@@ -246,6 +272,12 @@ export default class UserShow extends wepy.page {
     }
   }
 
+  async Addcomment() {
+    wx.navigateTo({
+      url: '/pages/commu/addcomment?id=' + this.user.userInfo.userId
+    })
+  }
+
   async onReachBottom() {
     if (this.noMoreData_notice) {
       return
@@ -260,7 +292,12 @@ export default class UserShow extends wepy.page {
 
     this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
     this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
-    this.getUser(options.id)
+    if (options.id) {
+      this.getUser(options.id)
+    } else {
+      this.getUser('me')
+    }
+
     console.log(options)
     this.getNotice(options.id)
   }
