@@ -51,7 +51,8 @@ export default class extends wepy.app {
       'pages/commu/addNotice',
       'pages/commu/collection',
       'pages/users/showuser',
-      'pages/commu/addcomment'
+      'pages/commu/addcomment',
+      'pages/commu/shownotice'
     ],
     window: {
       backgroundTextStyle: 'light',

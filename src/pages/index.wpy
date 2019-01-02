@@ -71,7 +71,7 @@
       <view class="weui-panel weui-panel_access">
         <view class="weui-panel__bd">
           <repeat for="{{ notice }}" key="id" index="index" item="notice">
-            <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+            <navigator url="/pages/commu/shownotice?id={{notice._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
               <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" url="/pages/users/showuser?id={{ notice.author._id }}">
                 <image class="weui-media-box__thumb" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"/></image>
               </view>
