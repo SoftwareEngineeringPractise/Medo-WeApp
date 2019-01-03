@@ -363,7 +363,7 @@ export default class UserShow extends wepy.page {
     this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
     let me = await this.$parent.getCurrentUser()
     this.me = me._id
-    console.log('me'+this.me)
+    console.log('me' + this.me)
     // this.$apply()
     if (options.id) {
       this.hisid = options.id
