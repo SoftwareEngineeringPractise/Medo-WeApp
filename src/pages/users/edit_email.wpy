@@ -49,8 +49,11 @@ export default class EditUserEmail extends wepy.page {
     this.errors = null
     try {
       let editResponse = await api.authedit({
-        url: 'api/wx/users/me/email' + '?email=' + e.detail.value.email,
-        method: 'PUT'
+        url: 'api/wx/users/me/email',
+        method: 'POST',
+        data: {
+          'email': e.detail.value.email
+        }
       })
 
       if (editResponse.statusCode === 400) { // 报错信息

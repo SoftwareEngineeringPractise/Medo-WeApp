@@ -49,8 +49,11 @@ export default class EditUserTel extends wepy.page {
     this.errors = null
     try {
       let editResponse = await api.authedit({
-        url: 'api/wx/users/me/tel' + '?tel=' + e.detail.value.tel,
-        method: 'PUT'
+        url: 'api/wx/users/me/tel',
+        method: 'POST',
+        data: {
+          'tel': e.detail.value.tel
+        }
       })
 
       if (editResponse.statusCode === 400) { // 报错信息
