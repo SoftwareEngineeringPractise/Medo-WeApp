@@ -83,10 +83,12 @@ page{
           <view class="weui-cell__bd">
             <view>{{ user.username }}
               <view wx:if="{{user.verified}}" class="userintro">
-              北京大学{{}}   工学院生医系教授{{}}  <icon type="success" size="20"></icon></view>
+              {{user.userInfo.school}}   {{user.userInfo.department}}  <icon type="success" size="20"></icon></view>
             </view>
+            <view wx:if="{{me!==hisid}}"><!--对自己不显示-->
             <button wx:if="{{ !followed}}" class="weui-btn mini-btn" type="primary" size="mini" bindtap="follow">+关注</button>
-            <button wx:elif class="weui-btn mini-btn" type="default" size="mini" bindtap="unfollow">取消关注</button>
+            <button wx:if="{{followed}}" class="weui-btn mini-btn" type="default" size="mini" bindtap="unfollow">取消关注</button>
+            </view>
           </view>
         </view>
       </view>
@@ -106,7 +108,7 @@ page{
             <view class="weui-panel__bd" hidden="{{activeIndex !=1 }}">
               <view class="weui-panel__bd">
                 <repeat for="{{noticeList}}" key="id" index="n_index" item="notice">
-                  <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                  <navigator url="/pages/commu/shownotice?id={{notice._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
                     <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
                       <image class="weui-media-box__thumb avatar" src=""></image>
                     </view>
@@ -169,11 +171,13 @@ export default class UserShow extends wepy.page {
     sliderOffset: 0,
     sliderLeft: 0,
     user: null,
+    me: null,
     noticeList: [],
     page: 1,
     noMoreData_notice: false,
     followed: false,
-    commentList: []
+    commentList: [],
+    hisid: null
   }
 
   methods={
@@ -215,7 +219,9 @@ export default class UserShow extends wepy.page {
         method: 'GET'
       })
       let noticeList = noticeListResponse.data.data
+
       this.noticeList = reset ? noticeList.docs : this.noticeList.concat(noticeList.docs)
+      console.log(this.noticeList)
       if (noticeList.page === noticeList.pages) {
         this.noMoreData_notice = true
       }
@@ -311,6 +317,33 @@ export default class UserShow extends wepy.page {
     })
   }
 
+  async ifFollowed(id) {
+    try {
+      let token = await wepy.getStorageSync('token')
+      let ifResponse = await api.request({
+        url: 'api/wx/follows/' + id,
+        method: 'POST',
+        header: {
+          'Authorization': token
+        }
+      })
+      if (ifResponse.statusCode === 200 && ifResponse.data.meta.code === 0) {
+        this.followed = ifResponse.data.data.follow
+        this.$apply()
+      }
+      if (ifResponse.statusCode === 400) {
+        console.log(this.me)
+        console.log(this.hisid)
+      }
+    } catch (err) {
+      console.log(err)
+      wepy.showModal({
+        title: '提示',
+        content: '发生错误'
+      })
+    }
+  }
+
   async onReachBottom() {
     if (this.activeIndex !== 1) {
       return
@@ -328,16 +361,24 @@ export default class UserShow extends wepy.page {
 
     this.sliderLeft = (res.windowWidth / this.tabs.length - sliderWidth) / 2
     this.sliderOffset = res.windowWidth / this.tabs.length * this.activeIndex
+    let me = await this.$parent.getCurrentUser()
+    this.me = me._id
+    console.log('me'+this.me)
+    // this.$apply()
     if (options.id) {
+      this.hisid = options.id
+      this.ifFollowed(options.id)
       this.getUser(options.id)
       this.getNotice(options.id)
       this.getComment(options.id)
     } else {
+      this.hisid = this.me
       this.getUser('me')
       this.getComment('me')
-      let me = await this.$parent.getCurrentUser()
-      this.getNotice(me.userInfo.userId)
+      // let me = await this.$parent.getCurrentUser()
+      this.getNotice(this.me)
     }
+    this.$apply()
 
     console.log(options)
   }

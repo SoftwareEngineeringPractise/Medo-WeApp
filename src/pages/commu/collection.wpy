@@ -58,7 +58,7 @@
                               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
                                 <view class="weui-media-box__title topic-title">{{ followee.followId.username}}</view>
                                 <view class="weui-media-box__info topic-info">
-                                  <view class="weui-media-box__info__meta">简介or认证</view>
+                                  <view class="weui-media-box__info__meta">{{}}</view>
                                 </view>
                               </view>
                             </navigator>
@@ -70,7 +70,7 @@
                     <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 1}}">
                       <view class="weui-panel__bd">
                         <repeat for="{{ noticeList }}" key="id" index="n_index" item="notice">
-                          <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                          <navigator url="/pages/commu/shownotice?id={{notice._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
                             <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
                               <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
                             </view>
@@ -90,7 +90,7 @@
                     <view class="weui-panel weui-panel_access" hidden="{{activeIndex != 2}}">
                       <view class="weui-panel__bd">
                         <repeat for="{{ collectList }}" key="id" index="c_index" item="collect">
-                          <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                          <navigator url="/pages/commu/shownotice?id={{collect.contentId._id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
                             <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
                               <image class="weui-media-box__thumb avatar" src="https://iocaffcdn.phphub.org/uploads/avatars/3995_1516760409.jpg?imageView2/1/w/200/h/200"></image>
                             </view>
@@ -98,7 +98,7 @@
                               <view class="weui-media-box__title">{{ collect.contentId.title }}</view>
                               <view class="weui-media__info notice-info">
                                 <view class="weui-media-box__desc">{{ collect.contentId.description }}</view>
-                                <view class="weui-media-box__info__meta">{{ collect.userId.username }}</view>
+
                                 <view class="weui-media-box__info__meta">{{ collect.contentId.addTime }}</view>
                               </view>
                             </view>
@@ -126,7 +126,7 @@ export default class Toast extends wepy.page {
   }
       data = {
         tabs: ['关注', '动态', '收藏'],
-        activeIndex: 1,
+        activeIndex: 0,
         sliderOffset: 0,
         sliderLeft: 0,
         followees: [],
@@ -142,7 +142,7 @@ export default class Toast extends wepy.page {
           this.activeIndex = e.currentTarget.id
           console.log(this.activeIndex)
           if (this.activeIndex === '0') {
-            console.log('xuanzhong!')
+            // console.log('xuanzhong!')
             this.getFollowees()
           }
           if (this.activeIndex === '1') {
@@ -168,10 +168,11 @@ export default class Toast extends wepy.page {
             let followeesList = followeesResponse.data.data
             this.followeesList = followeesList
             this.$apply()
-            console.log('111')
-            console.log(this.followeesList[0].followId.username)
+            console.log(this.followeesList)
+            // console.log(this.followeesList[0].followId.username)
           }
         } catch (err) {
+          console.log(err)
           wepy.showModal({
             title: '提示',
             content: '发生错误，请重试'
@@ -185,6 +186,7 @@ export default class Toast extends wepy.page {
           let noticelistResponse = await api.request({
             url: 'api/wx/me/updatings',
             header: {
+
               'Authorization': token
             },
             method: 'GET'
@@ -193,12 +195,14 @@ export default class Toast extends wepy.page {
           this.noticeList = noticeList
           this.$apply()
         } catch (err) {
+          console.log(err)
           wepy.showModal({
             title: '提示',
             content: '发生错误，请重试'
           })
         }
       }
+
       async getCollection() {
         try {
           let token = await wepy.getStorageSync('token')
@@ -210,6 +214,7 @@ export default class Toast extends wepy.page {
             }
           })
           this.collectList = collectListResponse.data.data
+          console.log(this.collectList)
           this.$apply()
         } catch (err) {
           wepy.showModal({

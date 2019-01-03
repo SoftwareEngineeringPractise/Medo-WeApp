@@ -49,8 +49,15 @@ export default class EditUsername extends wepy.page {
     this.errors = null
     try {
       let editResponse = await api.authedit({
-        url: 'api/wx/users/me/name' + '?name=' + e.detail.value.name,
-        method: 'PUT'
+        url: 'api/wx/users/me/name',
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+
+        },
+        data: {
+          'name': e.detail.value.name
+        }
       })
 
       if (editResponse.statusCode === 400) { // 报错信息
